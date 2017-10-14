@@ -105,7 +105,7 @@ func main() {
 		systemDir := path.Join(pagesDir, folder)
 		file := systemDir + "/" + args[0] + ".md"
 		if _, err := os.Stat(file); os.IsNotExist(err) {
-			if index == 2 {
+			if index == 1 {
 				log.Fatal("ERROR: no page found for " + args[0])
 			}
 		}
