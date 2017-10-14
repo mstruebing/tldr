@@ -3,7 +3,9 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"log"
+	"net/http"
 	"os"
 	"os/exec"
 	"os/user"
@@ -11,13 +13,48 @@ import (
 	"runtime"
 )
 
-func fetchPages() {
-	gitDir := getGitDir()
-	cmd := exec.Command("git", "clone", "https://github.com/tldr-pages/tldr", gitDir)
-	err := cmd.Run()
+func downloadFile(filepath string, url string) (err error) {
+	// Create the file
+	out, err := os.Create(filepath)
 	if err != nil {
+		return err
+	}
+	defer out.Close()
+
+	// Get the data
+	resp, err := http.Get(url)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	// Writer the body to file
+	_, err = io.Copy(out, resp.Body)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func fetchPages() {
+	cacheDir := getCacheDir()
+	err := downloadFile(cacheDir+"/tldr.zip", "http://tldr-pages.github.io/assets/tldr.zip")
+	if err != nil {
+		log.Fatal(err.Error())
 		log.Fatal("ERROR: Can't fetch tldr repository")
 	}
+}
+
+func unzipPages() {
+	cacheDir := getCacheDir()
+	cmd := exec.Command("unzip", cacheDir+"/tldr.zip", "-d", cacheDir)
+	err := cmd.Run()
+	if err != nil {
+		log.Fatal("ERROR: Can't unzip pages")
+	}
+
+	os.Remove(cacheDir + "/tldr.zip")
 }
 
 func getHomeDirectory() string {
@@ -34,7 +71,7 @@ func getHomeDirectory() string {
 
 func getCacheDir() string {
 	homeDir := getHomeDirectory()
-	return path.Join(homeDir, ".cache", "tldr-go")
+	return path.Join(homeDir, ".tldr-go")
 }
 
 func getPagesDir() string {
@@ -42,23 +79,9 @@ func getPagesDir() string {
 	return path.Join(cacheDir, "pages")
 }
 
-func getGitDir() string {
-	cacheDir := getCacheDir()
-	return path.Join(cacheDir, "tldr-git")
-}
-
 func createCacheDir() {
 	cacheDir := getCacheDir()
 	os.MkdirAll(cacheDir, 0755)
-}
-
-func copyPages() {
-	gitDir := getGitDir()
-	pagesDir := getPagesDir()
-	err := os.Rename(path.Join(gitDir, "pages"), pagesDir)
-	if err != nil {
-		log.Fatal("ERROR: " + err.Error())
-	}
 }
 
 func removeCacheDir() {
@@ -69,7 +92,7 @@ func removeCacheDir() {
 func setup() {
 	createCacheDir()
 	fetchPages()
-	copyPages()
+	unzipPages()
 }
 
 func update() {
