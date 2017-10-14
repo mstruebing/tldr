@@ -13,6 +13,25 @@ import (
 	"runtime"
 )
 
+func printHelp() {
+	fmt.Println("usage: tldr [-v] [OPTION]... SEARCH")
+	fmt.Println()
+	fmt.Println("available commands:")
+	fmt.Println("    -v                   print verbose output")
+	fmt.Println("    --version            print version and exit")
+	fmt.Println("    -h, --help           print this help and exit")
+	fmt.Println("    -u, --update         update local database")
+	fmt.Println("    -c, --clear-cache    clear local database")
+	fmt.Println("    -p, --platform=PLATFORM select platform, supported are linux / osx / sunos / common")
+	fmt.Println("    -r, --render=PATH    render a local page for testing purposes")
+}
+
+func printVersion() {
+	fmt.Println("tldr v 0.0.1")
+	fmt.Println("Copyright (C) 2017 Max Strübing")
+	fmt.Println("Source available at https://github.com")
+}
+
 func downloadFile(filepath string, url string) (err error) {
 	// Create the file
 	out, err := os.Create(filepath)
@@ -122,6 +141,21 @@ func main() {
 	}
 
 	args := os.Args[1:]
+
+	if len(args) < 1 {
+		printHelp()
+		os.Exit(0)
+	}
+
+	switch args[0] {
+	case "-h":
+	case "--help":
+		printHelp()
+	case "-v":
+	case "--version":
+		printVersion()
+	}
+
 	currentSystem := getCurrentSystem()
 
 	for index, folder := range []string{currentSystem, "common"} {
@@ -131,8 +165,9 @@ func main() {
 			if index == 1 {
 				log.Fatal("ERROR: no page found for " + args[0])
 			}
+		} else {
+			fmt.Println(file)
+			break
 		}
 	}
-
-	fmt.Println("Hello world!")
 }
