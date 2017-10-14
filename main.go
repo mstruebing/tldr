@@ -115,6 +115,7 @@ func setup() {
 }
 
 func update() {
+	// TODO: Check if update is needed
 	removeCacheDir()
 	setup()
 }
@@ -149,11 +150,17 @@ func main() {
 
 	switch args[0] {
 	case "-h":
+		printHelp()
 	case "--help":
 		printHelp()
 	case "-v":
+		printVersion()
 	case "--version":
 		printVersion()
+	case "-u":
+		update()
+	case "--update":
+		update()
 	}
 
 	currentSystem := getCurrentSystem()
