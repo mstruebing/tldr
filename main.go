@@ -8,11 +8,12 @@ import (
 	"os/exec"
 	"os/user"
 	"path"
+	"runtime"
 )
 
 func fetchPages() {
-	cacheDir := getCacheDir()
-	cmd := exec.Command("git", "clone", "https://github.com/tldr-pages/tldr", path.Join(cacheDir, "tldr-git"))
+	gitDir := getGitDir()
+	cmd := exec.Command("git", "clone", "https://github.com/tldr-pages/tldr", gitDir)
 	err := cmd.Run()
 	if err != nil {
 		log.Fatal("ERROR: Can't fetch tldr repository")
@@ -36,14 +37,25 @@ func getCacheDir() string {
 	return path.Join(homeDir, ".cache", "tldr-go")
 }
 
+func getPagesDir() string {
+	cacheDir := getCacheDir()
+	return path.Join(cacheDir, "pages")
+}
+
+func getGitDir() string {
+	cacheDir := getCacheDir()
+	return path.Join(cacheDir, "tldr-git")
+}
+
 func createCacheDir() {
 	cacheDir := getCacheDir()
 	os.MkdirAll(cacheDir, 0755)
 }
 
 func copyPages() {
-	cacheDir := getCacheDir()
-	err := os.Rename(path.Join(cacheDir, "tldr-git", "pages"), path.Join(cacheDir, "pages"))
+	gitDir := getGitDir()
+	pagesDir := getPagesDir()
+	err := os.Rename(path.Join(gitDir, "pages"), pagesDir)
 	if err != nil {
 		log.Fatal("ERROR: " + err.Error())
 	}
@@ -55,22 +67,48 @@ func removeCacheDir() {
 }
 
 func setup() {
-	// TODO: read commit hash and put it into root of cache dir
 	createCacheDir()
 	fetchPages()
 	copyPages()
 }
 
 func update() {
-	// TODO: check for newer version via commit hash
 	removeCacheDir()
 	setup()
 }
 
+func getCurrentSystem() string {
+	os := runtime.GOOS
+	switch os {
+	case "darwin":
+		os = "osx"
+	}
+
+	return os
+}
+
+func getFoldersToSearch() []string {
+	currentSystem := getCurrentSystem()
+	return []string{currentSystem, "common"}
+}
+
 func main() {
-	cacheDir := getCacheDir()
-	if _, err := os.Stat(path.Join(cacheDir, "pages")); os.IsNotExist(err) {
+	pagesDir := getPagesDir()
+	if _, err := os.Stat(pagesDir); os.IsNotExist(err) {
 		update()
+	}
+
+	args := os.Args[1:]
+	currentSystem := getCurrentSystem()
+
+	for index, folder := range []string{currentSystem, "common"} {
+		systemDir := path.Join(pagesDir, folder)
+		file := systemDir + "/" + args[0] + ".md"
+		if _, err := os.Stat(file); os.IsNotExist(err) {
+			if index == 2 {
+				log.Fatal("ERROR: no page found for " + args[0])
+			}
+		}
 	}
 
 	fmt.Println("Hello world!")
