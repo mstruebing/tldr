@@ -54,17 +54,23 @@ func removeCacheDir() {
 }
 
 func setup() {
+	// TODO: read commit hash and put it into root of cache dir
 	createCacheDir()
 	fetchPages()
 	copyPages()
 }
 
 func update() {
+	// TODO: check for newer version via commit hash
 	removeCacheDir()
 	setup()
 }
 
 func main() {
-	update()
+	cacheDir := getCacheDir()
+	if _, err := os.Stat(cacheDir + "/pages"); os.IsNotExist(err) {
+		update()
+	}
+
 	fmt.Println("Hello world!")
 }
