@@ -18,4 +18,4 @@ build: $(SOURCES)
 
 .PHONY: clean
 clean:
-	rm -Rf dist && rm -Rf ~/.tldr-go
+	rm -Rf dist && rm -Rf ~/.cache/tldr-go
