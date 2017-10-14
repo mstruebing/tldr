@@ -7,11 +7,12 @@ import (
 	"os"
 	"os/exec"
 	"os/user"
+	"path"
 )
 
 func fetchPages() {
 	cacheDir := getCacheDir()
-	cmd := exec.Command("git", "clone", "https://github.com/tldr-pages/tldr", cacheDir+"/tldr-git")
+	cmd := exec.Command("git", "clone", "https://github.com/tldr-pages/tldr", path.Join(cacheDir, "tldr-git"))
 	err := cmd.Run()
 	if err != nil {
 		log.Fatal("ERROR: Can't fetch tldr repository")
@@ -32,7 +33,7 @@ func getHomeDirectory() string {
 
 func getCacheDir() string {
 	homeDir := getHomeDirectory()
-	return homeDir + "/.cache/tldr-go"
+	return path.Join(homeDir, ".cache", "tldr-go")
 }
 
 func createCacheDir() {
@@ -42,7 +43,7 @@ func createCacheDir() {
 
 func copyPages() {
 	cacheDir := getCacheDir()
-	err := os.Rename(cacheDir+"/tldr-git/pages", cacheDir+"/pages")
+	err := os.Rename(path.Join(cacheDir, "tldr-git", "pages"), path.Join(cacheDir, "pages"))
 	if err != nil {
 		log.Fatal("ERROR: " + err.Error())
 	}
@@ -68,7 +69,7 @@ func update() {
 
 func main() {
 	cacheDir := getCacheDir()
-	if _, err := os.Stat(cacheDir + "/pages"); os.IsNotExist(err) {
+	if _, err := os.Stat(path.Join(cacheDir, "pages")); os.IsNotExist(err) {
 		update()
 	}
 
