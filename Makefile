@@ -7,11 +7,6 @@ TEST = go test
 SRC_DIR = .
 SOURCES = $(shell find $(SRC_DIR) -type f -name '*.go')
 
-# Set test dir and scan test dir for all java files
-TEST_DIR = src
-TEST_SOURCES = $(shell find $(TEST_DIR) -type f -name '*_test.go')
-
-
 # Targets
 all: start
 
@@ -20,9 +15,6 @@ start: build
 
 build: $(SOURCES)
 	$(COMPILE_COMMAND)
-
-test: $(SOURCES) $(TEST_SOURCES)
-	$(TEST)
 
 .PHONY: clean
 clean:
