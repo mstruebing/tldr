@@ -135,6 +135,32 @@ func getFoldersToSearch() []string {
 	return []string{currentSystem, "common"}
 }
 
+func listAllPages() {
+	fmt.Println("TODO: list all pages")
+}
+
+func printPageForPlatform(platform string, page string) {
+	fmt.Println("TODO: render page for platform: " + platform + " page: " + page)
+}
+
+func printSinglePage(page string) {
+	pagesDir := getPagesDir()
+	currentSystem := getCurrentSystem()
+
+	for index, folder := range []string{currentSystem, "common"} {
+		systemDir := path.Join(pagesDir, folder)
+		file := systemDir + "/" + page + ".md"
+		if _, err := os.Stat(file); os.IsNotExist(err) {
+			if index == 1 {
+				log.Fatal("ERROR: no page found for " + page)
+			}
+		} else {
+			fmt.Println(file)
+			break
+		}
+	}
+}
+
 func main() {
 	pagesDir := getPagesDir()
 	if _, err := os.Stat(pagesDir); os.IsNotExist(err) {
@@ -161,20 +187,15 @@ func main() {
 		update()
 	case "--update":
 		update()
-	}
-
-	currentSystem := getCurrentSystem()
-
-	for index, folder := range []string{currentSystem, "common"} {
-		systemDir := path.Join(pagesDir, folder)
-		file := systemDir + "/" + args[0] + ".md"
-		if _, err := os.Stat(file); os.IsNotExist(err) {
-			if index == 1 {
-				log.Fatal("ERROR: no page found for " + args[0])
-			}
-		} else {
-			fmt.Println(file)
-			break
-		}
+	case "-a":
+		listAllPages()
+	case "--list-all":
+		listAllPages()
+	case "-p":
+		printPageForPlatform("platform", "page")
+	case "--platform":
+		printPageForPlatform("platform", "page")
+	default:
+		printSinglePage(args[0])
 	}
 }
