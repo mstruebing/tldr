@@ -2,68 +2,69 @@
 package main
 
 import (
-	"errors"
 	"fmt"
+	"log"
 	"os"
 	"os/exec"
 	"os/user"
 )
 
 func fetchPages() {
-	homeDir, err := getHomeDirectory()
+	cacheDir := getCacheDir()
+	cmd := exec.Command("git", "clone", "https://github.com/tldr-pages/tldr", cacheDir+"/tldr-git")
+	err := cmd.Run()
 	if err != nil {
-		os.Stderr.WriteString("ERROR: " + err.Error() + "\n")
-	}
-	cmd := exec.Command("git", "clone", "https://github.com/tldr-pages/tldr", homeDir+"/.cache/tldr-go/pages-git")
-	err = cmd.Run()
-	if err != nil {
-		fmt.Println("ERROR: Can't fetch tldr repository")
+		log.Fatal("ERROR: Can't fetch tldr repository")
 	}
 }
 
-func getHomeDirectory() (string, error) {
+func getHomeDirectory() string {
 	usr, err := user.Current()
 	if err != nil {
-		return "", err
+		log.Fatal("ERROR: " + err.Error())
 	}
 	if usr.HomeDir == "" {
-		return "", errors.New("Can't load user's home folder path")
+		log.Fatal("ERROR: Can't load user's home folder path")
 	}
 
-	return usr.HomeDir, nil
+	return usr.HomeDir
 }
 
-func createCacheDir() error {
-	homeDir, err := getHomeDirectory()
-	if err != nil {
-		os.Stderr.WriteString("ERROR: " + err.Error() + "\n")
-		return err
-	}
+func getCacheDir() string {
+	homeDir := getHomeDirectory()
+	return homeDir + "/.cache/tldr-go"
+}
 
-	os.MkdirAll(homeDir+"/.cache/tldr-go", 0755)
-	return nil
+func createCacheDir() {
+	cacheDir := getCacheDir()
+	os.MkdirAll(cacheDir, 0755)
 }
 
 func copyPages() {
-	homeDir, err := getHomeDirectory()
+	cacheDir := getCacheDir()
+	err := os.Rename(cacheDir+"/tldr-git/pages", cacheDir+"/pages")
 	if err != nil {
-		os.Stderr.WriteString("ERROR: " + err.Error() + "\n")
-		return
-	}
-
-	err = os.Rename(homeDir+"/.cache/tldr-go/pages-git/pages", homeDir+"/.cache/tldr-go/pages")
-	if err != nil {
-		os.Stderr.WriteString("ERROR: " + err.Error() + "\n")
+		log.Fatal("ERROR: " + err.Error())
 	}
 }
 
-func main() {
+func removeCacheDir() {
+	cacheDir := getCacheDir()
+	os.RemoveAll(cacheDir)
+}
+
+func setup() {
 	createCacheDir()
 	fetchPages()
 	copyPages()
-	err := createCacheDir()
-	if err != nil {
-		os.Exit(1)
-	}
+}
+
+func update() {
+	removeCacheDir()
+	setup()
+}
+
+func main() {
+	update()
 	fmt.Println("Hello world!")
 }
