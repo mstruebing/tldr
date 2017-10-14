@@ -10,8 +10,12 @@ import (
 )
 
 func fetchPages() {
-	cmd := exec.Command("git", "clone", "https://github.com/tldr-pages/tldr", "/tmp/tldr-pages")
-	err := cmd.Run()
+	homeDir, err := getHomeDirectory()
+	if err != nil {
+		os.Stderr.WriteString("ERROR: " + err.Error() + "\n")
+	}
+	cmd := exec.Command("git", "clone", "https://github.com/tldr-pages/tldr", homeDir+"/.cache/tldr-go/pages-git")
+	err = cmd.Run()
 	if err != nil {
 		fmt.Println("ERROR: Can't fetch tldr repository")
 	}
@@ -36,11 +40,30 @@ func createCacheDir() error {
 		return err
 	}
 
-	os.MkdirAll(homeDir+"/.tldr-go", 755)
+	os.MkdirAll(homeDir+"/.cache/tldr-go", 0755)
 	return nil
+}
+
+func copyPages() {
+	homeDir, err := getHomeDirectory()
+	if err != nil {
+		os.Stderr.WriteString("ERROR: " + err.Error() + "\n")
+		return
+	}
+
+	err = os.Rename(homeDir+"/.cache/tldr-go/pages-git/pages", homeDir+"/.cache/tldr-go/pages")
+	if err != nil {
+		os.Stderr.WriteString("ERROR: " + err.Error() + "\n")
+	}
 }
 
 func main() {
 	createCacheDir()
+	fetchPages()
+	copyPages()
+	err := createCacheDir()
+	if err != nil {
+		os.Exit(1)
+	}
 	fmt.Println("Hello world!")
 }
