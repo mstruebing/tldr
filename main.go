@@ -204,7 +204,9 @@ func printPage(lines []string) {
 
 		if strings.HasPrefix(line, ">") {
 			fmt.Println(line[2:])
-			fmt.Println()
+			if !strings.HasPrefix(lines[i+1], ">") {
+				fmt.Println()
+			}
 		}
 
 		if strings.HasPrefix(line, "-") {
