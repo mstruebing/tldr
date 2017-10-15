@@ -94,7 +94,7 @@ func getHomeDirectory() string {
 
 func getCacheDir() string {
 	homeDir := getHomeDirectory()
-	return path.Join(homeDir, ".tldr-go")
+	return path.Join(homeDir, ".tldr")
 }
 
 func getPagesDir() string {
