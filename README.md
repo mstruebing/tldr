@@ -45,4 +45,5 @@ Otherwise you can build the executable yourself and copy it wherever you want. O
 This is an early stage and maybe there are some bugs.
 Contribution in form of issues, suggestions, testing and pull requests are very welcome.
 
-If you contribute code wise please make sure to run `gofmt` and `govet`
+If you contribute code wise please make sure to run `gofmt` and `go vet`.
+It runs in travis and will let your build fail if the code doesn't obey these rules.

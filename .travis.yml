@@ -4,7 +4,10 @@ go:
   - 1.8
   - 1.9
 
-script: make build
+script: 
+  - make build
+  - go vet main.go
+  - gofmt main.go > diff_file && diff main.go diff_file
 
 notifications:
   email: false
