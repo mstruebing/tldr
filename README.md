@@ -1,4 +1,4 @@
-# tldr go client
+# tldr go client [![Build Status](https://travis-ci.org/mstruebing/tldr-go-client.svg?branch=master)](https://travis-ci.org/mstruebing/tldr-go-client)
 
 ## Usage
 
