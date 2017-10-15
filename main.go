@@ -13,6 +13,7 @@ import (
 	"os/user"
 	"path"
 	"runtime"
+	"strings"
 )
 
 func printHelp() {
@@ -133,6 +134,21 @@ func getCurrentSystem() string {
 	return os
 }
 
+func readLines(path string) ([]string, error) {
+	file, err := os.Open(path)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+
+	var lines []string
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		lines = append(lines, scanner.Text())
+	}
+	return lines, scanner.Err()
+}
+
 func listAllPages() {
 	currentSystem := getCurrentSystem()
 	pagesDir := getPagesDir()
@@ -146,6 +162,40 @@ func listAllPages() {
 	}
 }
 
+func convertExample(line string) string {
+	var processedLine string = line
+	const BLUE = "\x1b[34;1m"
+	const RED = "\x1b[31;1m"
+	processedLine = strings.Replace(processedLine, "{{", BLUE, -1)
+	processedLine = strings.Replace(processedLine, "}}", RED, -1)
+	return strings.Replace(processedLine, "`", "", -1)
+}
+
+func printPage(lines []string) {
+	const GREEN = "\x1b[32;1m"
+	const RED = "\x1b[31;1m"
+	const RESET = "\x1b[30;1m"
+	for i, line := range lines {
+		if strings.HasPrefix(line, "#") {
+			fmt.Println(line[2:])
+			fmt.Println()
+		}
+
+		if strings.HasPrefix(line, ">") {
+			fmt.Println(line[2:])
+			fmt.Println()
+		}
+
+		if strings.HasPrefix(line, "-") {
+			fmt.Printf("%s%s%s\n", GREEN, line, RESET)
+			fmt.Printf("    %s%s%s\n", RED, convertExample(lines[i+2]), RESET)
+			if i < len(lines)-3 {
+				fmt.Println()
+			}
+		}
+	}
+}
+
 func printPageForPlatform(platform string, page string) {
 	pagesDir := getPagesDir()
 	platformDir := path.Join(pagesDir, platform)
@@ -153,14 +203,11 @@ func printPageForPlatform(platform string, page string) {
 	if _, err := os.Stat(file); os.IsNotExist(err) {
 		log.Fatal("ERROR: no page found for " + page + " in platform " + platform)
 	} else {
-		inFile, _ := os.Open(file)
-		defer inFile.Close()
-		scanner := bufio.NewScanner(inFile)
-		scanner.Split(bufio.ScanLines)
-
-		for scanner.Scan() {
-			fmt.Println(scanner.Text())
+		lines, err := readLines(file)
+		if err != nil {
+			log.Fatal("ERROR: Something went wrong while reading the page")
 		}
+		printPage(lines)
 	}
 }
 
@@ -168,22 +215,19 @@ func printSinglePage(page string) {
 	pagesDir := getPagesDir()
 	currentSystem := getCurrentSystem()
 
-	for index, folder := range []string{currentSystem, "common"} {
-		systemDir := path.Join(pagesDir, folder)
+	for index, system := range []string{currentSystem, "common"} {
+		systemDir := path.Join(pagesDir, system)
 		file := systemDir + "/" + page + ".md"
 		if _, err := os.Stat(file); os.IsNotExist(err) {
 			if index == 1 {
 				log.Fatal("ERROR: no page found for " + page)
 			}
 		} else {
-			inFile, _ := os.Open(file)
-			defer inFile.Close()
-			scanner := bufio.NewScanner(inFile)
-			scanner.Split(bufio.ScanLines)
-
-			for scanner.Scan() {
-				fmt.Println(scanner.Text())
+			lines, err := readLines(file)
+			if err != nil {
+				log.Fatal("ERROR: Something went wrong while reading the page")
 			}
+			printPage(lines)
 			break
 		}
 	}
