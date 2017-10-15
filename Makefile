@@ -7,11 +7,8 @@ TEST = go test
 SRC_DIR = .
 SOURCES = $(shell find $(SRC_DIR) -type f -name '*.go')
 
-# Targets
-all: start
-
-start: build
-	./dist/tldr
+install: build 
+	mkdir -p ~/.local/bin && cp dist/tldr ~/.local/bin
 
 build: $(SOURCES)
 	$(COMPILE_COMMAND)
