@@ -5,6 +5,7 @@ import (
 	"bufio"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -21,9 +22,9 @@ func printHelp() {
 	fmt.Println("    -v, --version           print version and exit")
 	fmt.Println("    -h, --help              print this help and exit")
 	fmt.Println("    -u, --update            update local database")
-	fmt.Println("    -p, --platform=PLATFORM select platform, supported are linux / osx / sunos / common")
+	fmt.Println("    -p, --platform PLATFORM select platform, supported are linux / osx / sunos / common")
 	fmt.Println("    -a, --list-all          list all available commands for the current platform")
-	fmt.Println("    -r, --render=PATH       render a local page for testing purposes")
+	fmt.Println("    -r, --render PATH       render a local page for testing purposes")
 }
 
 func printVersion() {
@@ -132,17 +133,35 @@ func getCurrentSystem() string {
 	return os
 }
 
-func getFoldersToSearch() []string {
-	currentSystem := getCurrentSystem()
-	return []string{currentSystem, "common"}
-}
-
 func listAllPages() {
-	fmt.Println("TODO: list all pages")
+	currentSystem := getCurrentSystem()
+	pagesDir := getPagesDir()
+	pages, err := ioutil.ReadDir(path.Join(pagesDir, currentSystem))
+	if err != nil {
+		log.Fatal("ERROR: Can't read pages for current platform: " + currentSystem)
+	}
+
+	for _, page := range pages {
+		fmt.Println(page.Name()[:len(page.Name())-3])
+	}
 }
 
 func printPageForPlatform(platform string, page string) {
-	fmt.Println("TODO: render page for platform: " + platform + " page: " + page)
+	pagesDir := getPagesDir()
+	platformDir := path.Join(pagesDir, platform)
+	file := platformDir + "/" + page + ".md"
+	if _, err := os.Stat(file); os.IsNotExist(err) {
+		log.Fatal("ERROR: no page found for " + page + " in platform " + platform)
+	} else {
+		inFile, _ := os.Open(file)
+		defer inFile.Close()
+		scanner := bufio.NewScanner(inFile)
+		scanner.Split(bufio.ScanLines)
+
+		for scanner.Scan() {
+			fmt.Println(scanner.Text())
+		}
+	}
 }
 
 func printSinglePage(page string) {
@@ -201,9 +220,17 @@ func main() {
 	case "--list-all":
 		listAllPages()
 	case "-p":
-		printPageForPlatform("platform", "page")
+		if len(args) > 2 {
+			printPageForPlatform(args[1], args[2])
+		} else {
+			log.Fatal("ERROR: No platform provided or page provided")
+		}
 	case "--platform":
-		printPageForPlatform("platform", "page")
+		if len(args) > 2 {
+			printPageForPlatform(args[1], args[2])
+		} else {
+			log.Fatal("ERROR: No platform provided or page provided")
+		}
 	default:
 		printSinglePage(args[0])
 	}
