@@ -2,6 +2,7 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"io"
 	"log"
@@ -17,11 +18,9 @@ func printHelp() {
 	fmt.Println("usage: tldr [-v] [OPTION]... SEARCH")
 	fmt.Println()
 	fmt.Println("available commands:")
-	fmt.Println("    -v                   print verbose output")
-	fmt.Println("    --version            print version and exit")
+	fmt.Println("    -v, --version            print version and exit")
 	fmt.Println("    -h, --help           print this help and exit")
 	fmt.Println("    -u, --update         update local database")
-	fmt.Println("    -c, --clear-cache    clear local database")
 	fmt.Println("    -p, --platform=PLATFORM select platform, supported are linux / osx / sunos / common")
 	fmt.Println("    -r, --render=PATH    render a local page for testing purposes")
 }
@@ -58,6 +57,7 @@ func downloadFile(filepath string, url string) (err error) {
 
 func fetchPages() {
 	cacheDir := getCacheDir()
+	fmt.Println("fetching pages...")
 	err := downloadFile(cacheDir+"/tldr.zip", "http://tldr-pages.github.io/assets/tldr.zip")
 	if err != nil {
 		log.Fatal(err.Error())
@@ -67,6 +67,7 @@ func fetchPages() {
 
 func unzipPages() {
 	cacheDir := getCacheDir()
+	fmt.Println("unpacking pages...")
 	cmd := exec.Command("unzip", cacheDir+"/tldr.zip", "-d", cacheDir)
 	err := cmd.Run()
 	if err != nil {
@@ -112,10 +113,10 @@ func setup() {
 	createCacheDir()
 	fetchPages()
 	unzipPages()
+	fmt.Println("All done!")
 }
 
 func update() {
-	// TODO: Check if update is needed
 	removeCacheDir()
 	setup()
 }
@@ -155,7 +156,14 @@ func printSinglePage(page string) {
 				log.Fatal("ERROR: no page found for " + page)
 			}
 		} else {
-			fmt.Println(file)
+			inFile, _ := os.Open(file)
+			defer inFile.Close()
+			scanner := bufio.NewScanner(inFile)
+			scanner.Split(bufio.ScanLines)
+
+			for scanner.Scan() {
+				fmt.Println(scanner.Text())
+			}
 			break
 		}
 	}
