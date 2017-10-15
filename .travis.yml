@@ -5,3 +5,6 @@ go:
   - 1.9
 
 script: make build
+
+notifications:
+  email: false
