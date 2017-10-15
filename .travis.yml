@@ -6,7 +6,7 @@ go:
 
 script: 
   - make build
-  - go vet main go
+  - go vet main.go
   - gofmt main.go > diff_file && diff main.go diff_file
 
 notifications:
