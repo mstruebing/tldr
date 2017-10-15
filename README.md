@@ -31,7 +31,7 @@ To build it yourself you need golang installed.
 ## Building
 
 If you want to build it yourself you can use the `Makefile` and type `make build`.
-This will put the `tldr` bin in a `dist` folder.
+This will put the `tldr` bin in a `bin` folder.
 If you want to compile it without it just do a `go build` in the root of this repository.
 
 To install it on your system you can do a simple `make install` in the root of this repository.

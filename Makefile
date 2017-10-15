@@ -1,4 +1,4 @@
-COMPILE_COMMAND = go build -o dist/tldr main.go
+COMPILE_COMMAND = go build -o bin/tldr main.go
 
 # Test command
 TEST = go test
@@ -8,11 +8,11 @@ SRC_DIR = .
 SOURCES = $(shell find $(SRC_DIR) -type f -name '*.go')
 
 install: build 
-	mkdir -p ~/.local/bin && cp dist/tldr ~/.local/bin
+	mkdir -p ~/.local/bin && cp bin/tldr ~/.local/bin
 
 build: $(SOURCES)
 	$(COMPILE_COMMAND)
 
 .PHONY: clean
 clean:
-	rm -Rf dist && rm -Rf ~/.cache/tldr-go
+	rm -Rf bin && rm -Rf ~/.cache/tldr
