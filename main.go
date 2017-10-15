@@ -18,11 +18,12 @@ func printHelp() {
 	fmt.Println("usage: tldr [-v] [OPTION]... SEARCH")
 	fmt.Println()
 	fmt.Println("available commands:")
-	fmt.Println("    -v, --version            print version and exit")
-	fmt.Println("    -h, --help           print this help and exit")
-	fmt.Println("    -u, --update         update local database")
+	fmt.Println("    -v, --version           print version and exit")
+	fmt.Println("    -h, --help              print this help and exit")
+	fmt.Println("    -u, --update            update local database")
 	fmt.Println("    -p, --platform=PLATFORM select platform, supported are linux / osx / sunos / common")
-	fmt.Println("    -r, --render=PATH    render a local page for testing purposes")
+	fmt.Println("    -a, --list-all          list all available commands for the current platform")
+	fmt.Println("    -r, --render=PATH       render a local page for testing purposes")
 }
 
 func printVersion() {
