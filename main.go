@@ -217,6 +217,18 @@ func printPage(lines []string) {
 	}
 }
 
+func printPageInPath(path string) {
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		log.Fatal("ERROR: Page doesn't exist")
+	} else {
+		lines, err := readLines(path)
+		if err != nil {
+			log.Fatal("ERROR: Something went wrong while reading the page")
+		}
+		printPage(lines)
+	}
+}
+
 func printPageForPlatform(platform string, page string) {
 	pagesDir := getPagesDir()
 	platformDir := path.Join(pagesDir, platform)
@@ -280,6 +292,18 @@ func main() {
 		update()
 	case "--update":
 		update()
+	case "-r":
+		if len(args) > 1 {
+			printPageInPath(args[1])
+		} else {
+			log.Fatal("ERROR: No page provided")
+		}
+	case "--render":
+		if len(args) > 1 {
+			printPageInPath(args[1])
+		} else {
+			log.Fatal("ERROR: No page provided")
+		}
 	case "-a":
 		listAllPages()
 	case "--list-all":
