@@ -134,6 +134,27 @@ func getCurrentSystem() string {
 	return os
 }
 
+func getSystems() []string {
+	var systems []string
+	pagesDir := getPagesDir()
+	currentSystem := getCurrentSystem()
+	systems = append(systems, currentSystem)
+	systems = append(systems, "common")
+
+	availableSystems, err := ioutil.ReadDir(path.Join(pagesDir))
+	if err != nil {
+		log.Fatal("ERROR: Something bad happened while reading directories")
+	}
+
+	for _, availableSystem := range availableSystems {
+		if availableSystem.Name() != "index.json" && availableSystem.Name() != currentSystem && availableSystem.Name() != "common" {
+			systems = append(systems, availableSystem.Name())
+		}
+	}
+
+	return systems
+}
+
 func readLines(path string) ([]string, error) {
 	file, err := os.Open(path)
 	if err != nil {
@@ -213,9 +234,9 @@ func printPageForPlatform(platform string, page string) {
 
 func printSinglePage(page string) {
 	pagesDir := getPagesDir()
-	currentSystem := getCurrentSystem()
+	systems := getSystems()
 
-	for index, system := range []string{currentSystem, "common"} {
+	for index, system := range systems {
 		systemDir := path.Join(pagesDir, system)
 		file := systemDir + "/" + page + ".md"
 		if _, err := os.Stat(file); os.IsNotExist(err) {
