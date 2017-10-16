@@ -300,14 +300,13 @@ func main() {
 		page := flag.Arg(0)
 		if page == "" {
 			log.Fatal("ERROR: no page provided")
-			os.Exit(1)
 		}
 		printPageForPlatform(*platform, flag.Arg(0))
 	} else {
 		page := flag.Arg(0)
 		if page == "" {
-			log.Fatal("ERROR: no argument provided")
-			os.Exit(1)
+			flag.PrintDefaults()
+			os.Exit(0)
 		}
 		printSinglePage(page)
 	}
