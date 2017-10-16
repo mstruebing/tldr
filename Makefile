@@ -1,4 +1,4 @@
-COMPILE_COMMAND = go build -o bin/tldr main.go
+COMPILE_COMMAND = go build -o bin/tldr cmd/tldr/main.go
 
 # Test command
 TEST = go test
@@ -15,4 +15,4 @@ build: $(SOURCES)
 
 .PHONY: clean
 clean:
-	rm -Rf bin && rm -Rf ~/.cache/tldr
+	rm -Rf bin && rm -Rf ~/.tldr

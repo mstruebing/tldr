@@ -4,10 +4,11 @@ go:
   - 1.8
   - 1.9
 
-script: 
+script:
+  - diff -u <(echo -n) <(gofmt -d -s .)
+  - go tool vet .
   - make build
-  - go vet main.go
-  - gofmt main.go > diff_file && diff main.go diff_file
+  - go test -v ./...
 
 notifications:
   email: false
