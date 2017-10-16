@@ -3,6 +3,7 @@ package main
 
 import (
 	"bufio"
+	"flag"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -16,17 +17,13 @@ import (
 	"strings"
 )
 
-func printHelp() {
-	fmt.Println("usage: tldr [-v] [OPTION]... SEARCH")
-	fmt.Println()
-	fmt.Println("available commands:")
-	fmt.Println("    -v, --version           print version and exit")
-	fmt.Println("    -h, --help              print this help and exit")
-	fmt.Println("    -u, --update            update local database")
-	fmt.Println("    -p, --platform PLATFORM select platform, supported are linux / osx / sunos / common")
-	fmt.Println("    -a, --list-all          list all available commands for the current platform")
-	fmt.Println("    -r, --render PATH       render a local page for testing purposes")
-}
+const (
+	listAllUsage  = "list all available commands for the current platform"
+	platformUsage = "select platform; supported are: linux, osx, sunos, common"
+	renderUsage   = "render a local page for testing purposes"
+	updateUsage   = "update local database"
+	versionUsage  = "print version and exit"
+)
 
 func printVersion() {
 	fmt.Println("tldr v 0.0.1")
@@ -119,7 +116,7 @@ func setup() {
 	fmt.Println("All done!")
 }
 
-func update() {
+func updateLocal() {
 	removeCacheDir()
 	setup()
 }
@@ -271,58 +268,46 @@ func printSinglePage(page string) {
 func main() {
 	pagesDir := getPagesDir()
 	if _, err := os.Stat(pagesDir); os.IsNotExist(err) {
-		update()
+		updateLocal()
 	}
 
-	args := os.Args[1:]
+	version := flag.Bool("version", false, versionUsage)
+	flag.BoolVar(version, "v", false, versionUsage)
 
-	if len(args) < 1 {
-		printHelp()
-		os.Exit(0)
-	}
+	update := flag.Bool("update", false, updateUsage)
+	flag.BoolVar(update, "u", false, updateUsage)
 
-	switch args[0] {
-	case "-h":
-		printHelp()
-	case "--help":
-		printHelp()
-	case "-v":
+	render := flag.String("render", "", renderUsage)
+	flag.StringVar(render, "r", "", renderUsage)
+
+	listAll := flag.Bool("list-all", false, listAllUsage)
+	flag.BoolVar(listAll, "a", false, listAllUsage)
+
+	platform := flag.String("platform", "", platformUsage)
+	flag.StringVar(platform, "p", "", platformUsage)
+
+	flag.Parse()
+
+	if *version {
 		printVersion()
-	case "--version":
-		printVersion()
-	case "-u":
-		update()
-	case "--update":
-		update()
-	case "-r":
-		if len(args) > 1 {
-			printPageInPath(args[1])
-		} else {
-			log.Fatal("ERROR: No page provided")
-		}
-	case "--render":
-		if len(args) > 1 {
-			printPageInPath(args[1])
-		} else {
-			log.Fatal("ERROR: No page provided")
-		}
-	case "-a":
+	} else if *update {
+		updateLocal()
+	} else if *render != "" {
+		printPageInPath(*render)
+	} else if *listAll {
 		listAllPages()
-	case "--list-all":
-		listAllPages()
-	case "-p":
-		if len(args) > 2 {
-			printPageForPlatform(args[1], args[2])
-		} else {
-			log.Fatal("ERROR: No platform provided or page provided")
+	} else if *platform != "" {
+		page := flag.Arg(0)
+		if page == "" {
+			log.Fatal("ERROR: no page provided")
 		}
-	case "--platform":
-		if len(args) > 2 {
-			printPageForPlatform(args[1], args[2])
-		} else {
-			log.Fatal("ERROR: No platform provided or page provided")
+		printPageForPlatform(*platform, flag.Arg(0))
+	} else {
+		page := flag.Arg(0)
+		if page == "" {
+			flag.PrintDefaults()
+			os.Exit(0)
 		}
-	default:
-		printSinglePage(args[0])
+		printSinglePage(page)
 	}
 }
