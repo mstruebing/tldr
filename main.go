@@ -26,7 +26,7 @@ const (
 )
 
 func printVersion() {
-	fmt.Println("tldr v 0.0.1")
+	fmt.Println("tldr v 1.0.2")
 	fmt.Println("Copyright (C) 2017 Max Strübing")
 	fmt.Println("Source available at https://github.com")
 }
