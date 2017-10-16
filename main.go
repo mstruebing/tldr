@@ -3,6 +3,7 @@ package main
 
 import (
 	"bufio"
+	"flag"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -14,6 +15,14 @@ import (
 	"path"
 	"runtime"
 	"strings"
+)
+
+const (
+	listAllUsage  = "list all available commands for the current platform"
+	platformUsage = "select platform; supported are: linux, osx, sunos, common"
+	renderUsage   = "render a local page for testing purposes"
+	updateUsage   = "update local database"
+	versionUsage  = "print version and exit"
 )
 
 func printHelp() {
@@ -119,7 +128,7 @@ func setup() {
 	fmt.Println("All done!")
 }
 
-func update() {
+func updateLocal() {
 	removeCacheDir()
 	setup()
 }
@@ -271,58 +280,47 @@ func printSinglePage(page string) {
 func main() {
 	pagesDir := getPagesDir()
 	if _, err := os.Stat(pagesDir); os.IsNotExist(err) {
-		update()
+		updateLocal()
 	}
 
-	args := os.Args[1:]
+	version := flag.Bool("version", false, versionUsage)
+	flag.BoolVar(version, "v", false, versionUsage)
 
-	if len(args) < 1 {
-		printHelp()
-		os.Exit(0)
-	}
+	update := flag.Bool("update", false, updateUsage)
+	flag.BoolVar(update, "u", false, updateUsage)
 
-	switch args[0] {
-	case "-h":
-		printHelp()
-	case "--help":
-		printHelp()
-	case "-v":
+	render := flag.String("render", "", renderUsage)
+	flag.StringVar(render, "r", "", renderUsage)
+
+	listAll := flag.Bool("list-all", false, listAllUsage)
+	flag.BoolVar(listAll, "a", false, listAllUsage)
+
+	platform := flag.String("platform", "", platformUsage)
+	flag.StringVar(platform, "p", "", platformUsage)
+
+	flag.Parse()
+
+	if *version {
 		printVersion()
-	case "--version":
-		printVersion()
-	case "-u":
-		update()
-	case "--update":
-		update()
-	case "-r":
-		if len(args) > 1 {
-			printPageInPath(args[1])
-		} else {
-			log.Fatal("ERROR: No page provided")
-		}
-	case "--render":
-		if len(args) > 1 {
-			printPageInPath(args[1])
-		} else {
-			log.Fatal("ERROR: No page provided")
-		}
-	case "-a":
+	} else if *update {
+		updateLocal()
+	} else if *render != "" {
+		printPageInPath(*render)
+	} else if *listAll {
 		listAllPages()
-	case "--list-all":
-		listAllPages()
-	case "-p":
-		if len(args) > 2 {
-			printPageForPlatform(args[1], args[2])
-		} else {
-			log.Fatal("ERROR: No platform provided or page provided")
+	} else if *platform != "" {
+		page := flag.Arg(0)
+		if page == "" {
+			log.Fatal("ERROR: no page provided")
+			os.Exit(1)
 		}
-	case "--platform":
-		if len(args) > 2 {
-			printPageForPlatform(args[1], args[2])
-		} else {
-			log.Fatal("ERROR: No platform provided or page provided")
+		printPageForPlatform(*platform, flag.Arg(0))
+	} else {
+		page := flag.Arg(0)
+		if page == "" {
+			log.Fatal("ERROR: no argument provided")
+			os.Exit(1)
 		}
-	default:
-		printSinglePage(args[0])
+		printSinglePage(page)
 	}
 }
