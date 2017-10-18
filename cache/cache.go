@@ -81,7 +81,7 @@ func (r *Repository) Pages(platform string) ([]string, error) {
 // Reload removes the cache directory, recreates it, and saves the data from the remote
 // to the local filesystem.
 func (r *Repository) Reload() error {
-	err := os.Remove(r.directory)
+	err := os.RemoveAll(r.directory)
 	if err != nil {
 		return fmt.Errorf("err removing cache directory: %s", err)
 	}

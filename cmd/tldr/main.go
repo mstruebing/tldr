@@ -35,7 +35,7 @@ func printVersion() {
 func main() {
 	repository, err := cache.NewRepository(remoteURL, ttl)
 	if err != nil {
-		log.Fatalf("ERROR: err creating cache repository: %s", err)
+		log.Fatalf("ERROR: creating cache repository: %s", err)
 	}
 
 	version := flag.Bool("version", false, versionUsage)
@@ -59,7 +59,9 @@ func main() {
 		printVersion()
 	} else if *update {
 		err = repository.Reload()
-		log.Fatalf("ERROR: err updating cache: %s", err)
+		if err != nil {
+			log.Fatalf("ERROR: updating cache: %s", err)
+		}
 	} else if *render != "" {
 		if _, err := os.Stat(*render); os.IsNotExist(err) {
 			log.Fatal("ERROR: page doesn't exist")
@@ -67,18 +69,18 @@ func main() {
 
 		page, err := os.Open(*render)
 		if err != nil {
-			log.Fatal("ERROR: err opening the page")
+			log.Fatal("ERROR: opening the page")
 		}
 		defer page.Close()
 
 		err = tldr.Write(page, os.Stdout)
 		if err != nil {
-			log.Fatalf("ERROR: err rendering the page: %s", err)
+			log.Fatalf("ERROR: rendering the page: %s", err)
 		}
 	} else if *listAll {
 		pages, err := repository.Pages(tldr.CurrentPlatform())
 		if err != nil {
-			log.Fatalf("ERROR: err getting pages: %s", err)
+			log.Fatalf("ERROR: getting pages: %s", err)
 		}
 
 		for _, page := range pages {
@@ -92,13 +94,13 @@ func main() {
 
 		markdown, err := repository.Markdown(*platform, page)
 		if err != nil {
-			log.Fatalf("ERROR: err getting markdown for '%s/%s': %s", *platform, page, err)
+			log.Fatalf("ERROR: getting markdown for '%s/%s': %s", *platform, page, err)
 		}
 		defer markdown.Close()
 
 		err = tldr.Write(markdown, os.Stdout)
 		if err != nil {
-			log.Fatalf("ERROR: err writing markdown: %s", err)
+			log.Fatalf("ERROR: writing markdown: %s", err)
 		}
 	} else {
 		page := flag.Arg(0)
@@ -110,13 +112,13 @@ func main() {
 		platform := tldr.CurrentPlatform()
 		markdown, err := repository.Markdown(platform, page)
 		if err != nil {
-			log.Fatalf("ERROR: err getting markdown for '%s/%s': %s", platform, page, err)
+			log.Fatalf("ERROR: getting markdown for '%s/%s': %s", platform, page, err)
 		}
 		defer markdown.Close()
 
 		err = tldr.Write(markdown, os.Stdout)
 		if err != nil {
-			log.Fatalf("ERROR: err writing markdown: %s", err)
+			log.Fatalf("ERROR: writing markdown: %s", err)
 		}
 	}
 }
