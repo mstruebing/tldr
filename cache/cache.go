@@ -33,7 +33,7 @@ type Repository struct {
 func NewRepository(remote string, ttl time.Duration) (*Repository, error) {
 	dir, err := cacheDir()
 	if err != nil {
-		return nil, fmt.Errorf("err getting cache directory: %s", err)
+		return nil, fmt.Errorf("ERROR: getting cache directory: %s", err)
 	}
 
 	repo := &Repository{directory: dir, remote: remote, ttl: ttl}
@@ -42,16 +42,16 @@ func NewRepository(remote string, ttl time.Duration) (*Repository, error) {
 	if os.IsNotExist(err) {
 		err = repo.makeCacheDir()
 		if err != nil {
-			return nil, fmt.Errorf("err creating cache directory: %s", err)
+			return nil, fmt.Errorf("ERROR: creating cache directory: %s", err)
 		}
 		err = repo.loadFromRemote()
 		if err != nil {
-			return nil, fmt.Errorf("err loading data from remote: %s", err)
+			return nil, fmt.Errorf("ERROR: loading data from remote: %s", err)
 		}
 	} else if err != nil || info.ModTime().Before(time.Now().Add(-ttl)) {
 		err = repo.Reload()
 		if err != nil {
-			return nil, fmt.Errorf("err reloading cache: %s", err)
+			return nil, fmt.Errorf("ERROR: reloading cache: %s", err)
 		}
 	}
 
@@ -85,7 +85,7 @@ func (r *Repository) Pages(platform string) ([]string, error) {
 	dir := path.Join(r.directory, pagesDirectory, platform)
 	pages, err := ioutil.ReadDir(dir)
 	if err != nil {
-		return nil, fmt.Errorf("err reading directory '%s': %s", dir, err)
+		return nil, fmt.Errorf("ERROR: reading directory '%s': %s", dir, err)
 	}
 
 	names := make([]string, len(pages))
@@ -101,17 +101,17 @@ func (r *Repository) Pages(platform string) ([]string, error) {
 func (r *Repository) Reload() error {
 	err := os.RemoveAll(r.directory)
 	if err != nil {
-		return fmt.Errorf("err removing cache directory: %s", err)
+		return fmt.Errorf("ERROR: removing cache directory: %s", err)
 	}
 
 	err = r.makeCacheDir()
 	if err != nil {
-		return fmt.Errorf("err creating cache directory: %s", err)
+		return fmt.Errorf("ERROR: creating cache directory: %s", err)
 	}
 
 	err = r.loadFromRemote()
 	if err != nil {
-		return fmt.Errorf("err loading data from remote: %s", err)
+		return fmt.Errorf("ERROR: loading data from remote: %s", err)
 	}
 	return nil
 }
@@ -119,30 +119,30 @@ func (r *Repository) Reload() error {
 func (r *Repository) loadFromRemote() error {
 	cache, err := os.Create(r.directory + zipPath)
 	if err != nil {
-		return fmt.Errorf("err creating cache: %s", err)
+		return fmt.Errorf("ERROR: creating cache: %s", err)
 	}
 	defer cache.Close()
 
 	resp, err := http.Get(r.remote)
 	if err != nil {
-		return fmt.Errorf("err getting response from remote: %s", err)
+		return fmt.Errorf("ERROR: getting response from remote: %s", err)
 	}
 	defer resp.Body.Close()
 
 	_, err = io.Copy(cache, resp.Body)
 	if err != nil {
-		return fmt.Errorf("err copying response body to cache: %s", err)
+		return fmt.Errorf("ERROR: copying response body to cache: %s", err)
 	}
 
 	cmd := exec.Command("unzip", r.directory+zipPath, "-d", r.directory)
 	err = cmd.Run()
 	if err != nil {
-		return fmt.Errorf("err unzipping pages: %s", err)
+		return fmt.Errorf("ERROR: unzipping pages: %s", err)
 	}
 
 	err = os.Remove(r.directory + zipPath)
 	if err != nil {
-		return fmt.Errorf("err removing zip: %s", err)
+		return fmt.Errorf("ERROR: removing zip: %s", err)
 	}
 	return nil
 }
@@ -154,10 +154,10 @@ func (r *Repository) makeCacheDir() error {
 func cacheDir() (string, error) {
 	usr, err := user.Current()
 	if err != nil {
-		return "", fmt.Errorf("err getting current user: %s", err)
+		return "", fmt.Errorf("ERROR: getting current user: %s", err)
 	}
 	if usr.HomeDir == "" {
-		return "", fmt.Errorf("err loading current user's home directory")
+		return "", fmt.Errorf("ERROR: loading current user's home directory")
 	}
 	return path.Join(usr.HomeDir, ".tldr"), nil
 }
