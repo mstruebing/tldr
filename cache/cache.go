@@ -13,6 +13,7 @@ import (
 )
 
 const (
+	indexJSON      = "index.json"
 	pagesDirectory = "pages"
 	pageSuffix     = ".md"
 	zipPath        = "/tldr.zip"
@@ -55,6 +56,23 @@ func NewRepository(remote string, ttl time.Duration) (*Repository, error) {
 	}
 
 	return repo, nil
+}
+
+// AvailablePlatforms returns all the availale platforms found in cache.
+func (r *Repository) AvailablePlatforms() ([]string, error) {
+	var platforms []string
+	available, err := ioutil.ReadDir(path.Join(r.directory, pagesDirectory))
+	if err != nil {
+		return nil, err
+	}
+
+	for _, f := range available {
+		platform := f.Name()
+		if platform != indexJSON {
+			platforms = append(platforms, platform)
+		}
+	}
+	return platforms, nil
 }
 
 // Markdown pulls the markdown from the page in cache.

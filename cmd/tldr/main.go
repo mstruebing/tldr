@@ -112,7 +112,21 @@ func main() {
 		platform := tldr.CurrentPlatform()
 		markdown, err := repository.Markdown(platform, page)
 		if err != nil {
-			log.Fatalf("ERROR: getting markdown for '%s/%s': %s", platform, page, err)
+			var platforms []string
+			platforms, err = tldr.AvailablePlatforms(repository)
+			if err != nil {
+				log.Fatalf("ERROR: getting available platforms: %s", err)
+			}
+
+			for _, platform = range platforms {
+				markdown, err = repository.Markdown(platform, page)
+				if err == nil {
+					break
+				}
+			}
+			if err != nil {
+				log.Fatalf("ERROR: getting markdown for '%s': %s", page, err)
+			}
 		}
 		defer markdown.Close()
 
