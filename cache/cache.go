@@ -9,6 +9,7 @@ import (
 	"os"
 	"os/user"
 	"path"
+	"path/filepath"
 	"strings"
 	"time"
 )
@@ -209,8 +210,12 @@ func cacheDir() (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("ERROR: getting current user: %s", err)
 	}
-	if usr.HomeDir == "" {
-		return "", fmt.Errorf("ERROR: loading current user's home directory")
+
+	homeDir, err := filepath.Abs(usr.HomeDir)
+
+	if usr.HomeDir == "" && err != nil {
+		return "", fmt.Errorf("ERROR: loading current user's home directory: %s", err)
 	}
-	return path.Join(usr.HomeDir, ".tldr"), nil
+
+	return path.Join(homeDir, ".tldr"), nil
 }
