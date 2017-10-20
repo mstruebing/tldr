@@ -21,6 +21,8 @@ available commands:
 Just copy the executable anywhere on your system, preferably in some folder where 
 your `$PATH` variable will find it.
 
+Executables to every release can be found on the release page of this repository.
+
 If you want to build it yourself see below.
 
 ## Dependencies
@@ -48,4 +50,4 @@ This is an early stage and maybe there are some bugs.
 Contribution in form of issues, suggestions, testing and pull requests are very welcome.
 
 If you contribute code wise please make sure to run `gofmt` and `go vet`.
-It runs in travis and will let your build fail if the code doesn't obey these rules.
+It runs in Travis-CI and will let your build fail if the code doesn't obey these rules.
