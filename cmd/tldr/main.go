@@ -125,7 +125,7 @@ func main() {
 				}
 			}
 			if err != nil {
-				log.Fatalf("ERROR: getting markdown for '%s': %s", page, err)
+				log.Fatalf("ERROR: no page found for '%s' in any available platform", page)
 			}
 		}
 		defer markdown.Close()
