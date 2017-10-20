@@ -41,10 +41,12 @@ func NewRepository(remote string, ttl time.Duration) (*Repository, error) {
 
 	info, err := os.Stat(dir)
 	if os.IsNotExist(err) {
+		fmt.Println("creating cache dir ...")
 		err = repo.makeCacheDir()
 		if err != nil {
 			return nil, fmt.Errorf("ERROR: creating cache directory: %s", err)
 		}
+		fmt.Println("fetch pages ...")
 		err = repo.loadFromRemote()
 		if err != nil {
 			return nil, fmt.Errorf("ERROR: loading data from remote: %s", err)
@@ -100,16 +102,19 @@ func (r *Repository) Pages(platform string) ([]string, error) {
 // Reload removes the cache directory, recreates it, and saves the data from the remote
 // to the local filesystem.
 func (r *Repository) Reload() error {
+	fmt.Println("removing old pages ...")
 	err := os.RemoveAll(r.directory)
 	if err != nil {
 		return fmt.Errorf("ERROR: removing cache directory: %s", err)
 	}
 
+	fmt.Println("creating new cache dir ...")
 	err = r.makeCacheDir()
 	if err != nil {
 		return fmt.Errorf("ERROR: creating cache directory: %s", err)
 	}
 
+	fmt.Println("fetch new pages ...")
 	err = r.loadFromRemote()
 	if err != nil {
 		return fmt.Errorf("ERROR: loading data from remote: %s", err)
@@ -135,6 +140,7 @@ func (r *Repository) loadFromRemote() error {
 		return fmt.Errorf("ERROR: copying response body to cache: %s", err)
 	}
 
+	fmt.Println("unzipping pages ...")
 	err = r.unzip()
 	if err != nil {
 		return fmt.Errorf("ERROR: unzipping pages: %s", err)
