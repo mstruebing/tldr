@@ -22,7 +22,7 @@ const (
 )
 
 const (
-	remoteURL = "http://tldr-pages.github.io/assets/tldr.zip"
+	remoteURL = "https://tldr.sh/assets/tldr.zip"
 	ttl       = time.Hour * 24 * 7
 )
 
