@@ -24,14 +24,16 @@ your `$PATH` variable will find it.
 If you want to build it yourself see below.
 
 ## Dependencies
-At the current state you just need unzip installed on your system to unzip the pages, nothing else is needed.
+~~At the current state you just need unzip installed on your system to unzip the pages, nothing else is needed.~~
 
-To build it yourself you need golang installed.
+You __don't__ need __any__ runtime dependencies.
+
+To build it yourself you just need golang(1.8 and 1.9 are currently tested) installed.
 
 ## Building
 
 If you want to build it yourself you can use the `Makefile` and type `make build`.
-This will put the `tldr` bin in a `bin` folder.
+This will put the `tldr` binary in a `bin` folder.
 If you want to compile it without it just do a `go build` in the root of this repository.
 
 To install it on your system you can do a simple `make install` in the root of this repository.
