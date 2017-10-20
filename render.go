@@ -11,7 +11,7 @@ const (
 	BLUE  = "\x1b[34;1m"
 	GREEN = "\x1b[32;1m"
 	RED   = "\x1b[31;1m"
-	RESET = "\x1b[30;1m"
+	RESET = "\x1b[33;0m"
 )
 
 // Render takes the given input and renders it for a prettier output.
