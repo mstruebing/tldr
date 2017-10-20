@@ -123,6 +123,45 @@ func (r *Repository) Reload() error {
 	return nil
 }
 
+func (r *Repository) copyZipFile(f *zip.File) error {
+	zipFile, err := f.Open()
+	if err != nil {
+		return fmt.Errorf("ERROR: opening file '%s': %s", f.Name, err)
+	}
+	defer zipFile.Close()
+
+	filepath := path.Join(r.directory, f.Name)
+	if f.FileInfo().IsDir() {
+		err := os.MkdirAll(filepath, os.ModePerm)
+		if err != nil {
+			return fmt.Errorf("ERROR: making directory '%s': %s", filepath, err)
+		}
+		return nil
+	}
+
+	var dirPath string
+	if lastIndex := strings.LastIndex(filepath, string(os.PathSeparator)); lastIndex > -1 {
+		dirPath = filepath[:lastIndex]
+	}
+
+	err = os.MkdirAll(dirPath, os.ModePerm)
+	if err != nil {
+		return fmt.Errorf("ERROR: making directories for '%s': %s", filepath, err)
+	}
+
+	file, err := os.OpenFile(filepath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, f.Mode())
+	if err != nil {
+		return fmt.Errorf("ERROR: opening file '%s': %s", filepath, err)
+	}
+	defer file.Close()
+
+	_, err = io.Copy(file, zipFile)
+	if err != nil {
+		return fmt.Errorf("ERROR: copying file '%s': %s", file.Name(), err)
+	}
+	return nil
+}
+
 func (r *Repository) loadFromRemote() error {
 	cache, err := os.Create(r.directory + zipPath)
 	if err != nil {
@@ -161,45 +200,14 @@ func (r *Repository) makeCacheDir() error {
 func (r *Repository) unzip() error {
 	reader, err := zip.OpenReader(r.directory + zipPath)
 	if err != nil {
-		return fmt.Errorf("err opening zip: %s", err)
+		return fmt.Errorf("ERROR: opening zip: %s", err)
 	}
 	defer reader.Close()
 
 	for _, f := range reader.File {
-		zipFile, err := f.Open()
+		err = r.copyZipFile(f)
 		if err != nil {
-			return fmt.Errorf("err opening file '%s': %s", f.Name, err)
-		}
-		defer zipFile.Close()
-
-		filepath := path.Join(r.directory, f.Name)
-		if f.FileInfo().IsDir() {
-			err := os.MkdirAll(filepath, os.ModePerm)
-			if err != nil {
-				return fmt.Errorf("err making directory '%s': %s", filepath, err)
-			}
-			continue
-		}
-
-		var dirPath string
-		if lastIndex := strings.LastIndex(filepath, string(os.PathSeparator)); lastIndex > -1 {
-			dirPath = filepath[:lastIndex]
-		}
-
-		err = os.MkdirAll(dirPath, os.ModePerm)
-		if err != nil {
-			return fmt.Errorf("err making directories for '%s': %s", filepath, err)
-		}
-
-		file, err := os.OpenFile(filepath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, f.Mode())
-		if err != nil {
-			return fmt.Errorf("err opening file '%s': %s", filepath, err)
-		}
-		defer file.Close()
-
-		_, err = io.Copy(file, zipFile)
-		if err != nil {
-			return fmt.Errorf("err copying file '%s': %s", file.Name(), err)
+			return fmt.Errorf("ERROR: copying zip file: %s", err)
 		}
 	}
 	return nil
