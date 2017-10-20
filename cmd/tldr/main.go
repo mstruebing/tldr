@@ -8,8 +8,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/mstruebing/tldr-go-client"
-	"github.com/mstruebing/tldr-go-client/cache"
+	"github.com/mstruebing/tldr"
+	"github.com/mstruebing/tldr/cache"
 )
 
 // Help message constants
@@ -27,7 +27,7 @@ const (
 )
 
 func printVersion() {
-	fmt.Println("tldr v 1.0.3")
+	fmt.Println("tldr v 1.0.5")
 	fmt.Println("Copyright (C) 2017 Max Strübing")
 	fmt.Println("Source available at https://github.com")
 }
