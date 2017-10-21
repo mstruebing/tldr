@@ -15,7 +15,7 @@ install: build
 build: $(SOURCES)
 	$(COMPILE_COMMAND)
 
-build-all-platforms: $(SOURCES) clean
+build-all-binaries: $(SOURCES) clean
 	# doesn't work on my machine and not in travis, see: https://github.com/golang/go/wiki/GoArm
 	# GOOS=android GOARCH=arm $(COMPILE_COMMAND) && mv ./bin/tldr ./bin/tldr-android-arm
 	# GOOS=darwin  GOARCH=arm $(COMPILE_COMMAND) && mv ./bin/tldr ./bin/tldr-darwin-arm
@@ -48,7 +48,7 @@ build-all-platforms: $(SOURCES) clean
 	GOOS=windows   GOARCH=386      $(COMPILE_COMMAND) && mv ./bin/tldr ./bin/tldr-windows-386
 	GOOS=windows   GOARCH=amd64    $(COMPILE_COMMAND) && mv ./bin/tldr ./bin/tldr-windows-amd64
 
-compress-all-binaries: $(BINARIES)
+compress-all-binaries: build-all-binaries
 	for f in $(BINARIES); do      \
         tar czf $$f.tar.gz $$f;    \
     done
