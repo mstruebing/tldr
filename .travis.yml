@@ -9,7 +9,7 @@ script:
   - go tool vet .
   - make build
   - go test -v ./...
-  - make build-all-platforms
+  - make build-all-binaries
 
 notifications:
   email: false
