@@ -27,7 +27,7 @@ const (
 	ttl       = time.Hour * 24 * 7
 )
 
-const CURRENT_PLATTFORM = runtime.GOOS
+const currentPlattform = runtime.GOOS
 
 func printVersion() {
 	fmt.Println("tldr v 1.0.6")
@@ -37,7 +37,7 @@ func printVersion() {
 
 func listAllPages() {
 	repository, err := cache.NewRepository(remoteURL, ttl)
-	pages, err := repository.Pages(tldr.CurrentPlatform(CURRENT_PLATTFORM))
+	pages, err := repository.Pages(tldr.CurrentPlatform(currentPlattform))
 	if err != nil {
 		log.Fatalf("ERROR: getting pages: %s", err)
 	}
@@ -71,11 +71,11 @@ func printPage(page string) {
 	}
 
 	repository, err := cache.NewRepository(remoteURL, ttl)
-	platform := tldr.CurrentPlatform(CURRENT_PLATTFORM)
+	platform := tldr.CurrentPlatform(currentPlattform)
 	markdown, err := repository.Markdown(platform, page)
 	if err != nil {
 		var platforms []string
-		platforms, err = tldr.AvailablePlatforms(repository, CURRENT_PLATTFORM)
+		platforms, err = tldr.AvailablePlatforms(repository, currentPlattform)
 		if err != nil {
 			log.Fatalf("ERROR: getting available platforms: %s", err)
 		}
