@@ -5,10 +5,8 @@ go:
   - 1.9
 
 script:
-  - diff -u <(echo -n) <(gofmt -d -s .)
-  - go tool vet .
+  - make test
   - make build
-  - go test -v ./...
   - make build-all-binaries
 
 notifications:
