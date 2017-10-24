@@ -1,15 +1,12 @@
 COMPILE_COMMAND = go build -o bin/tldr cmd/tldr/main.go
 
-# Test command
-TEST = go test
-
 # Set source dir and scan source dir for all go files
 SRC_DIR = .
 SOURCES = $(shell find $(SRC_DIR) -type f -name '*.go')
 
 BINARIES = $(wildcard bin/*)
 
-install: build 
+install: build
 	mkdir -p ~/.local/bin && cp bin/tldr ~/.local/bin
 
 build: $(SOURCES)
@@ -53,6 +50,11 @@ compress-all-binaries: build-all-binaries
         tar czf $$f.tar.gz $$f;    \
     done
 	@rm $(BINARIES)
+
+test: $(SOURCES)
+	@go test -v ./...
+	@go tool vet .
+	@test -z $(shell gofmt -s -l . | tee /dev/stderr) || (echo "[ERROR] Fix formatting issues with 'gofmt'" && exit 1)
 
 .PHONY: clean
 clean:

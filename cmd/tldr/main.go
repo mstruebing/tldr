@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"runtime"
 	"time"
 
 	"github.com/mstruebing/tldr"
@@ -26,6 +27,8 @@ const (
 	ttl       = time.Hour * 24 * 7
 )
 
+const CURRENT_PLATTFORM = runtime.GOOS
+
 func printVersion() {
 	fmt.Println("tldr v 1.0.6")
 	fmt.Println("Copyright (C) 2017 Max Strübing")
@@ -34,7 +37,7 @@ func printVersion() {
 
 func listAllPages() {
 	repository, err := cache.NewRepository(remoteURL, ttl)
-	pages, err := repository.Pages(tldr.CurrentPlatform())
+	pages, err := repository.Pages(tldr.CurrentPlatform(CURRENT_PLATTFORM))
 	if err != nil {
 		log.Fatalf("ERROR: getting pages: %s", err)
 	}
@@ -68,11 +71,11 @@ func printPage(page string) {
 	}
 
 	repository, err := cache.NewRepository(remoteURL, ttl)
-	platform := tldr.CurrentPlatform()
+	platform := tldr.CurrentPlatform(CURRENT_PLATTFORM)
 	markdown, err := repository.Markdown(platform, page)
 	if err != nil {
 		var platforms []string
-		platforms, err = tldr.AvailablePlatforms(repository)
+		platforms, err = tldr.AvailablePlatforms(repository, CURRENT_PLATTFORM)
 		if err != nil {
 			log.Fatalf("ERROR: getting available platforms: %s", err)
 		}
