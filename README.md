@@ -47,12 +47,12 @@ Otherwise you can build the executable yourself and copy it wherever you want. O
 
 |command | effect|
 |---|---|
-|make build |builds the binary for your current platform|
-|make install | runs build and copies the binary to `~/.local/bin/`|
-|make test | runs tests|
-|make build-all-binaries | builds all binaries for currently supported platforms|
-|make compress-all-binaries | runs make build-all-binaries and compresses|
-|make clean | cleans `./bin/` and `~/.tldr/` folders|
+|`make build` |builds the binary for your current platform|
+|`make install` | runs build and copies the binary to `~/.local/bin/`|
+|`make test` | runs tests|
+|`make build-all-binaries` | builds all binaries for currently supported platforms|
+|`make compress-all-binaries` | runs make build-all-binaries and compresses|
+|`make clean` | cleans `./bin/` and `~/.tldr/` folders|
 
 ## Autocompletion
 
