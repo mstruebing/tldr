@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"math/rand"
 	"os"
 	"runtime"
 	"time"
@@ -17,9 +18,10 @@ import (
 const (
 	listAllUsage  = "list all available commands for the current platform"
 	platformUsage = "select platform; supported are: linux, osx, sunos, common"
-	renderUsage   = "render a local page for testing purposes"
+	pathUsage     = "render a local page for testing purposes"
 	updateUsage   = "update local database"
 	versionUsage  = "print version and exit"
+	randomUsage   = "prints a random page"
 )
 
 const (
@@ -47,7 +49,7 @@ func listAllPages() {
 	}
 }
 
-func printSpecificPage(path string) {
+func printPageInPath(path string) {
 	if _, err := os.Stat(path); os.IsNotExist(err) {
 		log.Fatal("ERROR: page doesn't exist")
 	}
@@ -116,6 +118,17 @@ func printPageForPlatform(page string, platform string) {
 	}
 }
 
+func printRandomPage() {
+	repository, err := cache.NewRepository(remoteURL, ttl)
+	pages, err := repository.Pages()
+	if err != nil {
+		log.Fatalf("ERROR: getting pages: %s", err)
+	}
+	s := rand.NewSource(time.Now().Unix())
+	r := rand.New(s) // initialize local pseudorandom generator
+	printPage(pages[r.Intn(len(pages))])
+}
+
 func updatePages() {
 	repository, err := cache.NewRepository(remoteURL, ttl)
 	if err != nil {
@@ -134,8 +147,9 @@ func main() {
 	update := flag.Bool("update", false, updateUsage)
 	flag.BoolVar(update, "u", false, updateUsage)
 
-	render := flag.String("render", "", renderUsage)
-	flag.StringVar(render, "r", "", renderUsage)
+	path := flag.String("path", "", pathUsage)
+	// f like file
+	flag.StringVar(path, "f", "", pathUsage)
 
 	listAll := flag.Bool("list-all", false, listAllUsage)
 	flag.BoolVar(listAll, "a", false, listAllUsage)
@@ -143,19 +157,24 @@ func main() {
 	platform := flag.String("platform", "", platformUsage)
 	flag.StringVar(platform, "p", "", platformUsage)
 
+	random := flag.Bool("random", false, randomUsage)
+	flag.BoolVar(random, "r", false, randomUsage)
+
 	flag.Parse()
 
 	if *version {
 		printVersion()
 	} else if *update {
 		updatePages()
-	} else if *render != "" {
-		printSpecificPage(*render)
+	} else if *path != "" {
+		printPageInPath(*path)
 	} else if *listAll {
 		listAllPages()
 	} else if *platform != "" {
 		page := flag.Arg(0)
 		printPageForPlatform(page, *platform)
+	} else if *random {
+		printRandomPage()
 	} else {
 		page := flag.Arg(0)
 		printPage(page)
