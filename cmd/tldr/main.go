@@ -37,7 +37,7 @@ func printVersion() {
 
 func listAllPages() {
 	repository, err := cache.NewRepository(remoteURL, ttl)
-	pages, err := repository.Pages(tldr.CurrentPlatform(currentPlattform))
+	pages, err := repository.Pages()
 	if err != nil {
 		log.Fatalf("ERROR: getting pages: %s", err)
 	}

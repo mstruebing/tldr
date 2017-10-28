@@ -6,5 +6,5 @@ import "io"
 type Repository interface {
 	AvailablePlatforms() ([]string, error)
 	Markdown(platform, page string) (io.ReadCloser, error)
-	Pages(platform string) ([]string, error)
+	Pages() ([]string, error)
 }

@@ -85,11 +85,20 @@ func (r *Repository) Markdown(platform, page string) (io.ReadCloser, error) {
 }
 
 // Pages returns all the pages for the given platform.
-func (r *Repository) Pages(platform string) ([]string, error) {
-	dir := path.Join(r.directory, pagesDirectory, platform)
-	pages, err := ioutil.ReadDir(dir)
+func (r *Repository) Pages() ([]string, error) {
+	dir := path.Join(r.directory, pagesDirectory)
+
+	pages := []os.FileInfo{}
+	err := filepath.Walk(dir, func(path string, f os.FileInfo, err error) error {
+		if !f.IsDir() {
+			pages = append(pages, f)
+		}
+
+		return nil
+	})
+
 	if err != nil {
-		return nil, fmt.Errorf("ERROR: reading directory '%s': %s", dir, err)
+		return nil, fmt.Errorf("ERROR: can't read pages")
 	}
 
 	names := make([]string, len(pages))
