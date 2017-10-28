@@ -40,18 +40,24 @@ This will put the `tldr` binary in a `bin` folder.
 If you want to compile it without it just do a `go build` in the root of this repository.
 
 To install it on your system you can do a simple `make install` in the root of this repository.
-This will build the executable file and copy it into `~.local/bin`
+This will build the executable file and copy it into `~./bin`.
+You can install it into an other directory with:
+
+```
+INSTALL_DIR=/path/where/you/want/the/binary/to/live  make install
+```
+
 Make sure you have this directory in your `$PATH`.
 Otherwise you can build the executable yourself and copy it wherever you want. Or simply adjust the `Makefile` to your needs.
 
 
 |command | effect|
 |---|---|
-|`make build` |builds the binary for your current platform|
-|`make install` | runs build and copies the binary to `~/.local/bin/`|
+|`make build` |builds the binary for your current platform and places it in `./bin/`|
+|`make install` | runs build and copies the binary to `~/bin/`|
 |`make test` | runs tests|
 |`make build-all-binaries` | builds all binaries for currently supported platforms|
-|`make compress-all-binaries` | runs make build-all-binaries and compresses|
+|`make compress-all-binaries` | runs build-all-binaries and compresses them|
 |`make clean` | cleans `./bin/` and `~/.tldr/` folders|
 
 ## Autocompletion

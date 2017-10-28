@@ -6,11 +6,13 @@ SOURCES = $(shell find $(SRC_DIR) -type f -name '*.go')
 
 BINARIES = $(wildcard bin/*)
 
+INSTALL_DIR ?=~/bin/
+
 build: $(SOURCES)
 	$(COMPILE_COMMAND)
 
 install: build
-	mkdir -p ~/.local/bin && cp bin/tldr ~/.local/bin
+	mkdir -p $(INSTALL_DIR) && cp bin/tldr $(INSTALL_DIR)
 
 build-all-binaries: $(SOURCES) clean
 	# doesn't work on my machine and not in travis, see: https://github.com/golang/go/wiki/GoArm
