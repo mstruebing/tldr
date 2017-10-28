@@ -5,9 +5,9 @@ go:
   - 1.9
 
 script:
-  - make test
   - make build
-  - make build-all-binaries
+  - ./bin/tldr --update
+  - make test
 
 notifications:
   email: false
