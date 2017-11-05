@@ -26,6 +26,11 @@ Executables to every release can be found on the release page of this repository
 
 If you want to build it yourself see below.
 
+On arch linux you can simply:
+
+`yarourt -S tldr-go-client-git` or `pacaur -S tldr-go-client-git`, or any other aur-helper.
+This also auto install bash and zsh completions.
+
 ## Dependencies
 ~~At the current state you just need unzip installed on your system to unzip the pages, nothing else is needed.~~
 
