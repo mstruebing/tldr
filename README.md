@@ -3,7 +3,8 @@
 This tool shows the most common used parameter to different CLI-tools.
 This prevents long reading of help-flag output and man pages.
 
-![Example Output](https://raw.githubusercontent.com/mstruebing/tldr-go-client/master/docs/example.png "Example Output")
+![Example Output](https://raw.githubusercontent.com/mstruebing/tldr/master/docs/example.png "Example Output")
+
 
 ## Usage
 
