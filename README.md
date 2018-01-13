@@ -1,5 +1,10 @@
 # tldr [![Build Status](https://travis-ci.org/mstruebing/tldr.svg?branch=master)](https://travis-ci.org/mstruebing/tldr) [![Go Report Card](https://goreportcard.com/badge/github.com/mstruebing/tldr-go-client)](https://goreportcard.com/report/github.com/mstruebing/tldr-go-client)
 
+This tool shows the most common used parameter to different CLI-tools.
+This prevents long reading of help-flag output and man pages.
+
+![Example Output](https://raw.githubusercontent.com/mstruebing/tldr-go-client/master/docs/example.png "Example Output")
+
 ## Usage
 
 ```
@@ -15,8 +20,6 @@ available commands:
     -r, --random			print a random page
 ```
 
-![Example Output](https://raw.githubusercontent.com/mstruebing/tldr-go-client/master/docs/example.png "Example Output")
-
 ## Install
 
 Just copy the executable anywhere on your system, preferably in some folder where 
@@ -26,13 +29,12 @@ Executables to every release can be found on the release page of this repository
 
 If you want to build it yourself see below.
 
-On arch linux you can simply:
+On Arch Linux you can simply:
 
-`yarourt -S tldr-go-client-git` or `pacaur -S tldr-go-client-git`, or any other aur-helper.
+`yarourt -S tldr-go-client-git` or `trizen -S tldr-go-client-git`, or any other aur-helper.
 This also auto install bash and zsh completions.
 
 ## Dependencies
-~~At the current state you just need unzip installed on your system to unzip the pages, nothing else is needed.~~
 
 You __don't__ need __any__ runtime dependencies.
 
