@@ -6,13 +6,15 @@ SOURCES = $(shell find $(SRC_DIR) -type f -name '*.go')
 
 BINARIES = $(wildcard bin/*)
 
-INSTALL_DIR ?=~/bin/
+INSTALL_DIR ?=/usr/bin
 
 build: $(SOURCES)
 	$(COMPILE_COMMAND)
 
 install: build
-	mkdir -p $(INSTALL_DIR) && cp bin/tldr $(INSTALL_DIR)
+	sudo install -Dm755 bin/tldr $(INSTALL_DIR)/tldr
+	sudo install -Dm644 autocompletion/autocomplete.bash /usr/share/bash-completion/completions/_tldr
+	sudo install -Dm644 autocompletion/autocomplete.zsh /usr/share/zsh/site-functions/_tldr
 
 build-all-binaries: $(SOURCES) clean
 	# doesn't work on my machine and not in travis, see: https://github.com/golang/go/wiki/GoArm

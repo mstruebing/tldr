@@ -32,7 +32,7 @@ If you want to build it yourself see below.
 
 On Arch Linux you can simply:
 
-`yarourt -S tldr-go-client-git` or `trizen -S tldr-go-client-git`, or any other aur-helper.
+`yaourt -S tldr-go-client-git` or `trizen -S tldr-go-client-git`, or any other aur-helper.
 This also auto install bash and zsh completions.
 
 ## Dependencies
@@ -47,12 +47,12 @@ If you want to build it yourself you can use the `Makefile` and type `make build
 This will put the `tldr` binary in a `bin` folder.
 If you want to compile it without it just do a `go build` in the root of this repository.
 
-To install it on your system you can do a simple `make install` in the root of this repository.
-This will build the executable file and copy it into `~./bin`.
+To install it on your system you can do a simple `sudo make install` in the root of this repository.
+This will build the executable file and install it to `/usr/bin` as well as zsh and bash autocompletions.
 You can install it into an other directory with:
 
 ```
-INSTALL_DIR=/path/where/you/want/the/binary/to/live  make install
+INSTALL_DIR=/path/where/you/want/the/binary/to/live sudo make install
 ```
 
 Make sure you have this directory in your `$PATH`.
