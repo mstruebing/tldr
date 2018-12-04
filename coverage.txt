@@ -1,18 +1,5 @@
+
 mode: atomic
-github.com/mstruebing/tldr/render.go:18.49,22.21 4 0
-github.com/mstruebing/tldr/render.go:48.2,48.32 1 0
-github.com/mstruebing/tldr/render.go:22.21,24.23 2 0
-github.com/mstruebing/tldr/render.go:24.23,34.4 6 0
-github.com/mstruebing/tldr/render.go:34.9,34.42 1 0
-github.com/mstruebing/tldr/render.go:34.42,37.4 1 0
-github.com/mstruebing/tldr/render.go:37.9,37.42 1 0
-github.com/mstruebing/tldr/render.go:37.42,40.4 1 0
-github.com/mstruebing/tldr/render.go:40.9,40.42 1 0
-github.com/mstruebing/tldr/render.go:40.42,44.4 2 0
-github.com/mstruebing/tldr/render.go:44.9,46.4 1 0
-github.com/mstruebing/tldr/render.go:53.54,55.16 2 0
-github.com/mstruebing/tldr/render.go:58.2,59.12 2 0
-github.com/mstruebing/tldr/render.go:55.16,57.3 1 0
 github.com/mstruebing/tldr/platform.go:11.45,13.42 2 11
 github.com/mstruebing/tldr/platform.go:16.2,16.28 1 11
 github.com/mstruebing/tldr/platform.go:13.42,15.3 1 2
@@ -28,6 +15,21 @@ github.com/mstruebing/tldr/platform.go:31.9,31.33 1 9
 github.com/mstruebing/tldr/platform.go:31.33,33.4 1 2
 github.com/mstruebing/tldr/platform.go:36.19,38.3 1 1
 github.com/mstruebing/tldr/platform.go:39.18,41.3 1 0
+github.com/mstruebing/tldr/render.go:18.49,22.21 4 0
+github.com/mstruebing/tldr/render.go:48.2,48.32 1 0
+github.com/mstruebing/tldr/render.go:22.21,24.23 2 0
+github.com/mstruebing/tldr/render.go:24.23,34.4 6 0
+github.com/mstruebing/tldr/render.go:34.9,34.42 1 0
+github.com/mstruebing/tldr/render.go:34.42,37.4 1 0
+github.com/mstruebing/tldr/render.go:37.9,37.42 1 0
+github.com/mstruebing/tldr/render.go:37.42,40.4 1 0
+github.com/mstruebing/tldr/render.go:40.9,40.42 1 0
+github.com/mstruebing/tldr/render.go:40.42,44.4 2 0
+github.com/mstruebing/tldr/render.go:44.9,46.4 1 0
+github.com/mstruebing/tldr/render.go:53.54,55.16 2 0
+github.com/mstruebing/tldr/render.go:58.2,59.12 2 0
+github.com/mstruebing/tldr/render.go:55.16,57.3 1 0
+mode: atomic
 github.com/mstruebing/tldr/cache/cache.go:35.75,37.16 2 3
 github.com/mstruebing/tldr/cache/cache.go:41.2,44.24 3 3
 github.com/mstruebing/tldr/cache/cache.go:61.2,61.18 1 3
@@ -100,3 +102,4 @@ github.com/mstruebing/tldr/cache/cache.go:226.2,228.37 2 5
 github.com/mstruebing/tldr/cache/cache.go:232.2,232.41 1 5
 github.com/mstruebing/tldr/cache/cache.go:222.16,224.3 1 0
 github.com/mstruebing/tldr/cache/cache.go:228.37,230.3 1 0
+mode: atomic
