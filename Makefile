@@ -56,7 +56,7 @@ compress-all-binaries: build-all-binaries
 	@rm $(BINARIES)
 
 test: $(SOURCES)
-	@go test -p=1 -cover -v ./...
+	@./test.sh
 	@go tool vet .
 	@test -z $(shell gofmt -s -l . | tee /dev/stderr) || (echo "[ERROR] Fix formatting issues with 'gofmt'" && exit 1)
 
