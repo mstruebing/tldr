@@ -3,6 +3,7 @@
 set -e
 echo "" > coverage.txt
 
+# see https://github.com/codecov/example-go#caveat-multiple-files
 for d in $(go list ./... | grep -v vendor); do
     go test -race -coverprofile=profile.out -covermode=atomic $d
     if [ -f profile.out ]; then
