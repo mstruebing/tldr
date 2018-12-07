@@ -102,6 +102,12 @@ func TestMarkdown(t *testing.T) {
 	if err != nil {
 		t.Error("Exptected to successfully pull a page from the cache")
 	}
+
+	_, err = r.Markdown("linux", "hostnamee")
+
+	if err == nil {
+		t.Error("Exptected to return an error for non existing pages")
+	}
 }
 
 func TestPages(t *testing.T) {
