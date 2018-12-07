@@ -1,6 +1,6 @@
 # tldr
 [![Build Status](https://travis-ci.org/mstruebing/tldr.svg?branch=master)](https://travis-ci.org/mstruebing/tldr)
-[![codecov](https://codecov.io/gh/mstruebing/tldr/branch/master/graph/badge.svg)](https://codecov.io/gh/editorconfig-checker/editorconfig-checker.go)
+[![codecov](https://codecov.io/gh/mstruebing/tldr/branch/master/graph/badge.svg)](https://codecov.io/gh/mstruebing/tldr)
 [![Go Report Card](https://goreportcard.com/badge/github.com/mstruebing/tldr-go-client)](https://goreportcard.com/report/github.com/mstruebing/tldr-go-client)
 
 This tool shows the most common used parameter to different CLI-tools.
