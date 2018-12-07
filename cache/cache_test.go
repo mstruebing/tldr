@@ -125,3 +125,15 @@ func TestPages(t *testing.T) {
 		t.Error("Exptected to find some pages")
 	}
 }
+
+func TestLoadFromRemote(t *testing.T) {
+	remote := "https://tldr.sh/assets/tldr.zip"
+	ttl := time.Hour * 24 * 7
+	r, _ := NewRepository(remote, ttl)
+
+	err := r.loadFromRemote()
+
+	if err != nil {
+		t.Error("Exptected to successfully retrieve all pages.")
+	}
+}
