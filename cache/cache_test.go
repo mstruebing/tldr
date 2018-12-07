@@ -91,3 +91,31 @@ func TestReload(t *testing.T) {
 		t.Error("Expected to successfully reload the repository, got", err)
 	}
 }
+
+func TestMarkdown(t *testing.T) {
+	remote := "https://tldr.sh/assets/tldr.zip"
+	ttl := time.Hour * 24 * 7
+	r, _ := NewRepository(remote, ttl)
+
+	_, err := r.Markdown("linux", "hostname")
+
+	if err != nil {
+		t.Error("Exptected to successfully pull a page from the cache")
+	}
+}
+
+func TestPages(t *testing.T) {
+	remote := "https://tldr.sh/assets/tldr.zip"
+	ttl := time.Hour * 24 * 7
+	r, _ := NewRepository(remote, ttl)
+
+	pages, err := r.Pages()
+
+	if err != nil {
+		t.Error("Exptected to successfully retrieve all pages.")
+	}
+
+	if len(pages) == 0 {
+		t.Error("Exptected to find some pages")
+	}
+}
