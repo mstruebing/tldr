@@ -89,7 +89,7 @@ func (r *Repository) Pages() ([]string, error) {
 
 	pages := []os.FileInfo{}
 	err := filepath.Walk(dir, func(path string, f os.FileInfo, err error) error {
-		if !f.IsDir() {
+		if !f.IsDir() && strings.HasSuffix(f.Name(), ".md") {
 			pages = append(pages, f)
 		}
 
