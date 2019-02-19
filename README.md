@@ -69,7 +69,7 @@ Otherwise you can build the executable yourself and copy it wherever you want. O
 |`make test` | runs tests|
 |`make build-all-binaries` | builds all binaries for currently supported platforms|
 |`make compress-all-binaries` | runs build-all-binaries and compresses them|
-|`make clean` | cleans `./bin/` and `~/.tldr/` folders|
+|`make clean` | cleans `./bin/` and cache folders|
 
 ## Autocompletion
 

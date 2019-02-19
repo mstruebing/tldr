@@ -218,6 +218,13 @@ func (r *Repository) unzip() error {
 }
 
 func cacheDir() (string, error) {
+	XDG_CACHE_HOME := os.Getenv("XDG_CACHE_HOME")
+
+	// Use the XDG_CACHE_HOME environment variable if possible
+	if XDG_CACHE_HOME != "" {
+		return path.Join(XDG_CACHE_HOME, "tldr"), nil
+	}
+
 	usr, err := user.Current()
 	if err != nil {
 		return "", fmt.Errorf("ERROR: getting current user: %s", err)
@@ -229,5 +236,7 @@ func cacheDir() (string, error) {
 		return "", fmt.Errorf("ERROR: loading current user's home directory: %s", err)
 	}
 
-	return path.Join(homeDir, ".tldr"), nil
+	XDG_CACHE_HOME_DEFAULT := ".cache/"
+
+	return path.Join(homeDir, XDG_CACHE_HOME_DEFAULT, "tldr"), nil
 }

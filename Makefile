@@ -62,4 +62,4 @@ test: $(SOURCES)
 
 .PHONY: clean
 clean:
-	rm -Rf bin && rm -Rf ~/.tldr
+	rm -Rf bin; rm -Rf $(XDG_CACHE_HOME)/tldr; rm -Rf ~/.cache/tldr
