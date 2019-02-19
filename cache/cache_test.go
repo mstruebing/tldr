@@ -17,11 +17,20 @@ func contains(arr []string, str string) bool {
 }
 
 func TestCacheDir(t *testing.T) {
-	cacheDir, err := cacheDir()
+	cacheDirectory, err := cacheDir()
 
-	if err != nil || !strings.HasSuffix(cacheDir, ".tldr") {
-		t.Error("Expected linux, got ", err, cacheDir)
+	if err != nil || !strings.HasSuffix(cacheDirectory, ".cache/tldr") {
+		t.Error("Expected to end with `.cache/tldr` but got", err, cacheDirectory)
 	}
+
+	os.Setenv("XDG_CACHE_HOME", "/tmp")
+	cacheDirectory, err = cacheDir()
+
+	if err != nil || (cacheDirectory != "/tmp/tldr") {
+		t.Error("Expected to be `/tmp/.cache/tldr` but got", err, cacheDirectory)
+	}
+
+	os.Setenv("XDG_CACHE_HOME", "")
 }
 
 func TestNewRepository(t *testing.T) {
