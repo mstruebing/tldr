@@ -77,6 +77,10 @@ func printPage(page string) {
 	}
 
 	repository, err := cache.NewRepository(remoteURL, ttl)
+	if err != nil {
+		log.Fatalf("ERROR: creating cache repository: %s", err)
+	}
+
 	platform := tldr.CurrentPlatform(currentPlattform)
 	markdown, err := repository.Markdown(platform, page)
 	if err != nil {
@@ -128,6 +132,10 @@ func printPageForPlatform(page string, platform string) {
 
 func printRandomPage() {
 	repository, err := cache.NewRepository(remoteURL, ttl)
+	if err != nil {
+		log.Fatalf("ERROR: creating cache repository: %s", err)
+	}
+
 	pages, err := repository.Pages()
 	if err != nil {
 		log.Fatalf("ERROR: getting pages: %s", err)
