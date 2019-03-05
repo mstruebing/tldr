@@ -39,6 +39,10 @@ func printVersion() {
 
 func listAllPages() {
 	repository, err := cache.NewRepository(remoteURL, ttl)
+	if err != nil {
+		log.Fatalf("ERROR: creating repository: %s", err)
+	}
+
 	pages, err := repository.Pages()
 	if err != nil {
 		log.Fatalf("ERROR: getting pages: %s", err)
@@ -106,6 +110,10 @@ func printPageForPlatform(page string, platform string) {
 	}
 
 	repository, err := cache.NewRepository(remoteURL, ttl)
+	if err != nil {
+		log.Fatalf("ERROR: creating cache repository: %s", err)
+	}
+
 	markdown, err := repository.Markdown(platform, page)
 	if err != nil {
 		log.Fatalf("ERROR: getting markdown for '%s/%s': %s", platform, page, err)

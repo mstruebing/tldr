@@ -35,9 +35,8 @@ func testSliceEqual(a, b []string) bool {
 }
 
 func TestCurrentPlattform(t *testing.T) {
-	var currentPlattform string
+	var currentPlattform string = CurrentPlatform("linux")
 
-	currentPlattform = CurrentPlatform("linux")
 	if currentPlattform != "linux" {
 		t.Error("Expected linux, got ", currentPlattform)
 	}

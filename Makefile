@@ -57,7 +57,7 @@ compress-all-binaries: build-all-binaries
 
 test: $(SOURCES)
 	@./test.sh
-	@go tool vet .
+	@go vet .
 	@test -z $(shell gofmt -s -l . | tee /dev/stderr) || (echo "[ERROR] Fix formatting issues with 'gofmt'" && exit 1)
 
 .PHONY: clean
