@@ -8,6 +8,8 @@
 ### Fixed
 * golang ci errors
 ### Security
+### Misc
+* use go mod
 
 ## [1.1.1] - 2019-02-19
 ### Changed
