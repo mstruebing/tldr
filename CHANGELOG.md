@@ -2,16 +2,21 @@
 
 ## Unreleased
 ### Added
-* Added docker container [#50](https://github.com/mstruebing/tldr/pull/50) ([@mstruebing](https://github.com/mstruebing))
 ### Changed
-* Only load new cache when connected to the internet and remote host is reachable [#49](https://github.com/mstruebing/tldr/pull/49) ([@mstruebing](https://github.com/mstruebing))
 ### Deprecated
 ### Removed
 ### Fixed
-* golang ci errors
 ### Security
 ### Misc
-* use go mod
+
+## [1.2.0] - 2020-03-06
+### Added
+* Added docker container [#50](https://github.com/mstruebing/tldr/pull/50) ([@mstruebing](https://github.com/mstruebing))
+### Changed
+* Only load new cache when connected to the internet and remote host is reachable [#49](https://github.com/mstruebing/tldr/pull/49) ([@mstruebing](https://github.com/mstruebing))
+* Switched to go mod [47](https://github.com/mstruebing/tldr/pull/47) ([@mstruebing](https://github.com/mstruebing))
+### Fixed
+* golang ci errors
 
 ## [1.1.1] - 2019-02-19
 ### Changed
