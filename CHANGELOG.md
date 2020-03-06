@@ -2,6 +2,7 @@
 
 ## Unreleased
 ### Added
+* Added docker container [#50](https://github.com/mstruebing/tldr/pull/50) ([@mstruebing](https://github.com/mstruebing))
 ### Changed
 * Only load new cache when connected to the internet and remote host is reachable [#49](https://github.com/mstruebing/tldr/pull/49) ([@mstruebing](https://github.com/mstruebing))
 ### Deprecated
