@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"net"
 	"net/http"
+	"net/url"
 	"os"
 	"os/user"
 	"path"
@@ -51,7 +53,7 @@ func NewRepository(remote string, ttl time.Duration) (*Repository, error) {
 		if err != nil {
 			return nil, fmt.Errorf("ERROR: loading data from remote: %s", err)
 		}
-	} else if err != nil || info.ModTime().Before(time.Now().Add(-ttl)) {
+	} else if repo.isReachable() && (err != nil || info.ModTime().Before(time.Now().Add(-ttl))) {
 		err = repo.Reload()
 		if err != nil {
 			return nil, fmt.Errorf("ERROR: reloading cache: %s", err)
@@ -239,4 +241,17 @@ func cacheDir() (string, error) {
 	XDG_CACHE_HOME_DEFAULT := ".cache/"
 
 	return path.Join(homeDir, XDG_CACHE_HOME_DEFAULT, "tldr"), nil
+}
+
+func (r Repository) isReachable() bool {
+	u, err := url.Parse(r.remote)
+	if err != nil {
+		return false
+	}
+
+	seconds := 5
+	timeout := time.Duration(seconds) * time.Second
+
+	_, err = net.DialTimeout("tcp", u.Hostname()+":"+u.Port(), timeout)
+	return err == nil
 }
