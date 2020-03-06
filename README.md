@@ -38,6 +38,13 @@ On Arch Linux you can simply:
 `yaourt -S tldr-go-client-git` or `trizen -S tldr-go-client-git`, or any other aur-helper.
 This also auto install bash and zsh completions.
 
+### [Docker (mstruebing/tldr)](https://hub.docker.com/repository/docker/mstruebing/tldr/general)
+
+You can use a docker image:
+
+`docker pull mstruebing/tldr` and execute it via: `docker run -it mstruebing/tldr tldr tar` for example.
+If you want to connect into the container and execute more commands you can use `docker run -it mstruebing/tldr sh`.
+
 ## Dependencies
 
 You __don't__ need __any__ runtime dependencies.
