@@ -38,7 +38,7 @@ On Arch Linux you can simply:
 `yaourt -S tldr-go-client-git` or `trizen -S tldr-go-client-git`, or any other aur-helper.
 This also auto install bash and zsh completions.
 
-### [Docker (mstruebing/tldr)](https://hub.docker.com/repository/docker/mstruebing/tldr/general)
+### [Docker (mstruebing/tldr)](https://hub.docker.com/r/mstruebing/tldr)
 
 You can use a docker image:
 
