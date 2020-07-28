@@ -53,10 +53,14 @@ func NewRepository(remote string, ttl time.Duration) (*Repository, error) {
 		if err != nil {
 			return nil, fmt.Errorf("ERROR: loading data from remote: %s", err)
 		}
-	} else if repo.isReachable() && (err != nil || info.ModTime().Before(time.Now().Add(-ttl))) {
-		err = repo.Reload()
-		if err != nil {
-			return nil, fmt.Errorf("ERROR: reloading cache: %s", err)
+	} else if err != nil || info.ModTime().Before(time.Now().Add(-ttl)) {
+		if repo.isReachable() {
+			err = repo.Reload()
+			if err != nil {
+				return nil, fmt.Errorf("ERROR: reloading cache: %s", err)
+			}
+		} else {
+			fmt.Errorf("INFO: remote is not reachable, reload skipped")
 		}
 	}
 
