@@ -3,6 +3,7 @@
 ## Unreleased
 ### Added
 ### Changed
+* Only check remote is reachable when ttl timeout. [#52](https://github.com/mstruebing/tldr/pull/52) ([@wudong](https://github.com/wudong))
 ### Deprecated
 ### Removed
 ### Fixed
