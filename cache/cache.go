@@ -19,6 +19,7 @@ import (
 const (
 	indexJSON      = "index.json"
 	pagesDirectory = "pages"
+	historyPath        = "/history"
 	pageSuffix     = ".md"
 	zipPath        = "/tldr.zip"
 )
@@ -200,7 +201,20 @@ func (r *Repository) loadFromRemote() error {
 }
 
 func (r *Repository) makeCacheDir() error {
-	return os.MkdirAll(r.directory, 0755)
+	if err := os.MkdirAll(r.directory, 0755); err != nil {
+		fmt.Errorf("ERROR: creating directory %s: %s", r.directory, err)
+		return err
+	}
+	// touching the history file.
+	historyFile := r.directory +  historyPath
+	file, err := os.Create(historyPath)
+	if err != nil {
+		fmt.Errorf("ERROR: creating file %s: %s", historyFile, err)
+		return err
+	} else {
+		file.Close()
+		return nil
+	}
 }
 
 func (r *Repository) unzip() error {
