@@ -60,7 +60,7 @@ func NewRepository(remote string, ttl time.Duration) (*Repository, error) {
 				return nil, fmt.Errorf("ERROR: reloading cache: %s", err)
 			}
 		} else {
-			fmt.Errorf("INFO: remote is not reachable, reload skipped")
+			fmt.Println("INFO: remote is not reachable, reload skipped")
 		}
 	}
 
