@@ -9,6 +9,9 @@
 ### Security
 ### Misc
 
+## [1.2.1] - 2020-07-29
+* Only check remote is reachable when ttl timeout. [#52](https://github.com/mstruebing/tldr/pull/52) ([@wudong](https://github.com/wudong))
+
 ## [1.2.0] - 2020-03-06
 ### Added
 * Added docker container [#50](https://github.com/mstruebing/tldr/pull/50) ([@mstruebing](https://github.com/mstruebing))
