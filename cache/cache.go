@@ -2,6 +2,7 @@ package cache
 
 import (
 	"archive/zip"
+	"bufio"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -15,13 +16,12 @@ import (
 	"strconv"
 	"strings"
 	"time"
-	"bufio"
 )
 
 const (
 	indexJSON      = "index.json"
 	pagesDirectory = "pages"
-	historyPath        = "/history"
+	historyPath    = "/history"
 	pageSuffix     = ".md"
 	zipPath        = "/tldr.zip"
 )
@@ -37,7 +37,7 @@ type Repository struct {
 
 // HistoryRecord represent the search history of certain page
 type HistoryRecord struct {
-	page string
+	page  string
 	count int
 }
 
@@ -285,25 +285,23 @@ func (r Repository) isReachable() bool {
 	return err == nil
 }
 
-
-
 func (r Repository) RecordHistory(page string) error {
 	records, err := r.loadHistory()
-	if err!=nil {
+	if err != nil {
 		fmt.Errorf("ERROR: loading history failed %s", err)
 		return err
 	}
 
-	newRecord:= HistoryRecord{
-		page: page,
+	newRecord := HistoryRecord{
+		page:  page,
 		count: 1,
 	}
 
-	foundIdx:=-1
+	foundIdx := -1
 	for idx, r := range *records {
 		if r.page == page {
-			newRecord.count = r.count+1
-			foundIdx=idx
+			newRecord.count = r.count + 1
+			foundIdx = idx
 			break
 		}
 	}
@@ -320,7 +318,7 @@ func (r Repository) RecordHistory(page string) error {
 func (r Repository) saveHistory(history *[]HistoryRecord) error {
 	hisFile := path.Join(r.directory, historyPath)
 	inFile, err := os.Create(hisFile)
-	if err!=nil {
+	if err != nil {
 		fmt.Errorf("ERROR: opening history file %s", hisFile)
 		return err
 	}
@@ -332,8 +330,6 @@ func (r Repository) saveHistory(history *[]HistoryRecord) error {
 	return nil
 }
 
-
-
 func (r Repository) loadHistory() (*[]HistoryRecord, error) {
 	// read the history file line by line, into a map.
 	history := path.Join(r.directory, historyPath)
@@ -341,7 +337,7 @@ func (r Repository) loadHistory() (*[]HistoryRecord, error) {
 	_, err := os.Stat(history)
 
 	if os.IsNotExist(err) {
-		if err := touchFile(history);err!=nil {
+		if err := touchFile(history); err != nil {
 			fmt.Errorf("ERROR: cannot create the history file %s, %s", history, err)
 			return nil, err
 		}
@@ -361,14 +357,14 @@ func (r Repository) loadHistory() (*[]HistoryRecord, error) {
 	for scanner.Scan() {
 		line := scanner.Text()
 		lineParts := strings.Split(line, ",")
-	    count, err :=  strconv.Atoi(lineParts[1])
+		count, err := strconv.Atoi(lineParts[1])
 
-	    if err!=nil {
-	    	return nil, err
+		if err != nil {
+			return nil, err
 		}
 
 		historyRecords = append(historyRecords, HistoryRecord{
-			page: lineParts[0],
+			page:  lineParts[0],
 			count: count,
 		})
 	}
