@@ -12,8 +12,10 @@ import (
 	"os/user"
 	"path"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"time"
+	"bufio"
 )
 
 const (
@@ -31,6 +33,12 @@ type Repository struct {
 	directory string
 	remote    string
 	ttl       time.Duration
+}
+
+// HistoryRecord represent the search history of certain page
+type HistoryRecord struct {
+	page string
+	count int
 }
 
 // NewRepository returns a new cache repository. The data is loaded from the
@@ -210,15 +218,18 @@ func (r *Repository) makeCacheDir() error {
 		return err
 	}
 	// touching the history file.
-	historyFile := r.directory +  historyPath
-	file, err := os.Create(historyPath)
+	historyFile := path.Join(r.directory, historyPath)
+	return touchFile(historyFile)
+}
+
+func touchFile(fileName string) error {
+	file, err := os.Create(fileName)
+	defer file.Close()
 	if err != nil {
-		fmt.Errorf("ERROR: creating file %s: %s", historyFile, err)
+		fmt.Errorf("ERROR: creating file %s: %s", fileName, err)
 		return err
-	} else {
-		file.Close()
-		return nil
 	}
+	return nil
 }
 
 func (r *Repository) unzip() error {
@@ -272,4 +283,100 @@ func (r Repository) isReachable() bool {
 
 	_, err = net.DialTimeout("tcp", u.Hostname()+":"+u.Port(), timeout)
 	return err == nil
+}
+
+
+
+func (r Repository) RecordHistory(page string) error {
+	records, err := r.loadHistory()
+	if err!=nil {
+		fmt.Errorf("ERROR: loading history failed %s", err)
+		return err
+	}
+
+	newRecord:= HistoryRecord{
+		page: page,
+		count: 1,
+	}
+
+	foundIdx:=-1
+	for idx, r := range *records {
+		if r.page == page {
+			newRecord.count = r.count+1
+			foundIdx=idx
+			break
+		}
+	}
+
+	if foundIdx != -1 { //found in history, we want to put the last search at the end of the history.
+		newRecords := append((*records)[:foundIdx], (*records)[foundIdx+1:]...)
+		records = &newRecords
+	}
+
+	newRecords := append(*records, newRecord)
+	return r.saveHistory(&newRecords)
+}
+
+func (r Repository) saveHistory(history *[]HistoryRecord) error {
+	hisFile := path.Join(r.directory, historyPath)
+	inFile, err := os.Create(hisFile)
+	if err!=nil {
+		fmt.Errorf("ERROR: opening history file %s", hisFile)
+		return err
+	}
+	defer inFile.Close()
+
+	for _, his := range *history {
+		fmt.Fprintln(inFile, fmt.Sprintf("%s,%d", his.page, his.count))
+	}
+	return nil
+}
+
+
+
+func (r Repository) loadHistory() (*[]HistoryRecord, error) {
+	// read the history file line by line, into a map.
+	history := path.Join(r.directory, historyPath)
+	//if it is not exist, touch it.
+	_, err := os.Stat(history)
+
+	if os.IsNotExist(err) {
+		if err := touchFile(history);err!=nil {
+			fmt.Errorf("ERROR: cannot create the history file %s, %s", history, err)
+			return nil, err
+		}
+	}
+
+	inFile, err := os.Open(history)
+	if err != nil {
+		fmt.Errorf("ERROR: opening history file %s", history)
+		return nil, err
+	}
+
+	defer inFile.Close()
+
+	scanner := bufio.NewScanner(inFile)
+	historyRecords := make([]HistoryRecord, 0, 10)
+
+	for scanner.Scan() {
+		line := scanner.Text()
+		lineParts := strings.Split(line, ",")
+	    count, err :=  strconv.Atoi(lineParts[1])
+
+	    if err!=nil {
+	    	return nil, err
+		}
+
+		historyRecords = append(historyRecords, HistoryRecord{
+			page: lineParts[0],
+			count: count,
+		})
+	}
+
+	return &historyRecords, nil
+}
+
+func (r Repository) cleanHistory() {
+	history := path.Join(r.directory, historyPath)
+	touchFile(history)
 }

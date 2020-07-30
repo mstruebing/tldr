@@ -105,7 +105,10 @@ func printPage(page string) {
 	err = tldr.Write(markdown, os.Stdout)
 	if err != nil {
 		log.Fatalf("ERROR: writing markdown: %s", err)
+	}else {
+		repository.RecordHistory(page)
 	}
+
 }
 
 func printPageForPlatform(page string, platform string) {
