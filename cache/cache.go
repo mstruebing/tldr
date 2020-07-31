@@ -41,6 +41,10 @@ type HistoryRecord struct {
 	count int
 }
 
+func (h HistoryRecord) String() string {
+	return fmt.Sprintf("%s %d", h.page, h.count)
+}
+
 // NewRepository returns a new cache repository. The data is loaded from the
 // remote if missing or stale.
 func NewRepository(remote string, ttl time.Duration) (*Repository, error) {
@@ -286,7 +290,7 @@ func (r Repository) isReachable() bool {
 }
 
 func (r Repository) RecordHistory(page string) error {
-	records, err := r.loadHistory()
+	records, err := r.LoadHistory()
 	if err != nil {
 		fmt.Errorf("ERROR: loading history failed %s", err)
 		return err
@@ -330,7 +334,7 @@ func (r Repository) saveHistory(history *[]HistoryRecord) error {
 	return nil
 }
 
-func (r Repository) loadHistory() (*[]HistoryRecord, error) {
+func (r Repository) LoadHistory() (*[]HistoryRecord, error) {
 	// read the history file line by line, into a map.
 	history := path.Join(r.directory, historyPath)
 	//if it is not exist, touch it.
@@ -372,7 +376,7 @@ func (r Repository) loadHistory() (*[]HistoryRecord, error) {
 	return &historyRecords, nil
 }
 
-func (r Repository) cleanHistory() {
+func (r Repository) cleanHistory() error {
 	history := path.Join(r.directory, historyPath)
-	touchFile(history)
+	return touchFile(history)
 }

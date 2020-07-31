@@ -156,7 +156,7 @@ func TestHistory(t *testing.T) {
 	repo.RecordHistory("git-fetch")
 	repo.RecordHistory("git-pull")
 
-	history, err := repo.loadHistory()
+	history, err := repo.LoadHistory()
 	if err != nil {
 		t.Error("Expected to load history successful.")
 	}
