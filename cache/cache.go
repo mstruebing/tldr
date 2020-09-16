@@ -255,7 +255,14 @@ func (r Repository) isReachable() bool {
 
 	seconds := 5
 	timeout := time.Duration(seconds) * time.Second
+	var port string
 
-	_, err = net.DialTimeout("tcp", u.Hostname()+":"+u.Port(), timeout)
+	if u.Scheme == "https" {
+		port = "443"
+	} else if u.Scheme == "http" {
+		port = "80"
+	}
+
+	_, err = net.DialTimeout("tcp", u.Hostname()+":"+port, timeout)
 	return err == nil
 }
