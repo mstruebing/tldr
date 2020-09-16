@@ -12,11 +12,15 @@
 
 ### Fixed
 
--   Get port from scheme [#55](https://github.com/mstruebing/tldr/pull/55) ([@mstruebing](https://github.com/mstruebing))
-
 ### Security
 
 ### Misc
+
+## [1.2.2] - 2020-09-16
+
+### Fixed
+
+-   Get port from scheme [#55](https://github.com/mstruebing/tldr/pull/55) ([@mstruebing](https://github.com/mstruebing))
 
 ## [1.2.1] - 2020-07-29
 
