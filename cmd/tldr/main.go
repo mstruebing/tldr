@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"math"
 	"math/rand"
 	"os"
 	"runtime"
@@ -106,10 +107,12 @@ func printPage(page string) {
 	err = tldr.Write(markdown, os.Stdout)
 	if err != nil {
 		log.Fatalf("ERROR: writing markdown: %s", err)
-	} else {
-		repository.RecordHistory(page)
 	}
 
+	err2 := repository.RecordHistory(page)
+	if err2 != nil {
+		log.Fatalf("ERROR: saving history: %s", err2)
+	}
 }
 
 func printPageForPlatform(page string, platform string) {
@@ -175,7 +178,8 @@ func printHistory() {
 	if hisLen == 0 {
 		fmt.Println("No history is available yet")
 	} else { //default print last 10.
-		for i := 1; i <= 10; i++ {
+		size := int(math.Min(10, float64(hisLen)))
+		for i := 1; i <= size; i++ {
 			record := (*history)[hisLen-i]
 			fmt.Printf("%s\n", record)
 		}
@@ -203,7 +207,7 @@ func main() {
 	flag.BoolVar(random, "r", false, randomUsage)
 
 	history := flag.Bool("history", false, historyUsage)
-	flag.BoolVar(history, "h", false, historyUsage)
+	flag.BoolVar(history, "t", false, historyUsage)
 
 	flag.Parse()
 

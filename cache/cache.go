@@ -218,8 +218,7 @@ func (r *Repository) loadFromRemote() error {
 
 func (r *Repository) makeCacheDir() error {
 	if err := os.MkdirAll(r.directory, 0755); err != nil {
-		fmt.Errorf("ERROR: creating directory %s: %s", r.directory, err)
-		return err
+		return fmt.Errorf("ERROR: creating directory %s: %s", r.directory, err)
 	}
 	// touching the history file.
 	historyFile := path.Join(r.directory, historyPath)
@@ -228,11 +227,10 @@ func (r *Repository) makeCacheDir() error {
 
 func touchFile(fileName string) error {
 	file, err := os.Create(fileName)
-	defer file.Close()
 	if err != nil {
-		fmt.Errorf("ERROR: creating file %s: %s", fileName, err)
-		return err
+		return fmt.Errorf("ERROR: creating file %s: %s", fileName, err)
 	}
+	defer file.Close()
 	return nil
 }
 
@@ -292,8 +290,7 @@ func (r Repository) isReachable() bool {
 func (r Repository) RecordHistory(page string) error {
 	records, err := r.LoadHistory()
 	if err != nil {
-		fmt.Errorf("ERROR: loading history failed %s", err)
-		return err
+		return fmt.Errorf("ERROR: loading history failed %s", err)
 	}
 
 	newRecord := HistoryRecord{
@@ -323,8 +320,7 @@ func (r Repository) saveHistory(history *[]HistoryRecord) error {
 	hisFile := path.Join(r.directory, historyPath)
 	inFile, err := os.Create(hisFile)
 	if err != nil {
-		fmt.Errorf("ERROR: opening history file %s", hisFile)
-		return err
+		return fmt.Errorf("ERROR: opening history file %s", hisFile)
 	}
 	defer inFile.Close()
 
@@ -342,15 +338,14 @@ func (r Repository) LoadHistory() (*[]HistoryRecord, error) {
 
 	if os.IsNotExist(err) {
 		if err := touchFile(history); err != nil {
-			fmt.Errorf("ERROR: cannot create the history file %s, %s", history, err)
-			return nil, err
+			return nil, fmt.Errorf("ERROR: cannot create the history file %s, %s", history, err)
 		}
 	}
 
 	inFile, err := os.Open(history)
 	if err != nil {
-		fmt.Errorf("ERROR: opening history file %s", history)
-		return nil, err
+		return nil, fmt.Errorf("ERROR: opening history file %s", history)
+
 	}
 
 	defer inFile.Close()
@@ -374,9 +369,4 @@ func (r Repository) LoadHistory() (*[]HistoryRecord, error) {
 	}
 
 	return &historyRecords, nil
-}
-
-func (r Repository) cleanHistory() error {
-	history := path.Join(r.directory, historyPath)
-	return touchFile(history)
 }
