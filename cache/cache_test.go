@@ -145,7 +145,7 @@ func TestHistory(t *testing.T) {
 
 	repo.makeCacheDir()
 
-	if err2 := repo.RecordHistory("git-pull"); err2 != nil {
+	if err := repo.RecordHistory("git-pull"); err != nil {
 		t.Error("Expected to record history successful.")
 	}
 

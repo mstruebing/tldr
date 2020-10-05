@@ -109,9 +109,9 @@ func printPage(page string) {
 		log.Fatalf("ERROR: writing markdown: %s", err)
 	}
 
-	err2 := repository.RecordHistory(page)
-	if err2 != nil {
-		log.Fatalf("ERROR: saving history: %s", err2)
+	err = repository.RecordHistory(page)
+	if err != nil {
+		log.Fatalf("ERROR: saving history: %s", err)
 	}
 }
 
