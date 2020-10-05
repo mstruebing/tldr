@@ -4,6 +4,8 @@
 
 ### Added
 
+-   Add `history` function for the past page view. [#53](https://github.com/mstruebing/tldr/pull/53) ([@wudong](https://github.com/wudong))
+
 ### Changed
 
 ### Deprecated
