@@ -109,13 +109,13 @@ func TestMarkdown(t *testing.T) {
 	_, err := r.Markdown("linux", "hostname")
 
 	if err != nil {
-		t.Error("Exptected to successfully pull a page from the cache")
+		t.Error("Expected to successfully pull a page from the cache")
 	}
 
 	_, err = r.Markdown("linux", "hostnamee")
 
 	if err == nil {
-		t.Error("Exptected to return an error for non existing pages")
+		t.Error("Expected to return an error for non existing pages")
 	}
 }
 
@@ -127,10 +127,70 @@ func TestPages(t *testing.T) {
 	pages, err := r.Pages()
 
 	if err != nil {
-		t.Error("Exptected to successfully retrieve all pages.")
+		t.Error("Expected to successfully retrieve all pages.")
 	}
 
 	if len(pages) == 0 {
-		t.Error("Exptected to find some pages")
+		t.Error("Expected to find some pages")
 	}
+}
+
+func TestHistory(t *testing.T) {
+
+	repo := Repository{
+		directory: "/tmp/.cache/tldr",
+		remote:    "https://tldr.sh/assets/tldr.zip",
+		ttl:       time.Hour * 24 * 7,
+	}
+
+	repo.makeCacheDir()
+
+	if err2 := repo.RecordHistory("git-pull"); err2 != nil {
+		t.Error("Expected to record history successful.")
+	}
+
+	repo.RecordHistory("git-pull")
+	repo.RecordHistory("git-pull")
+	repo.RecordHistory("git-push")
+	repo.RecordHistory("git-push")
+	repo.RecordHistory("git-fetch")
+	repo.RecordHistory("git-pull")
+
+	history, err := repo.LoadHistory()
+	if err != nil {
+		t.Error("Expected to load history successful.")
+	}
+
+	length := len(*history)
+	if length != 3 {
+		t.Error("Expected to have 3 history records.")
+	}
+
+	rec1 := HistoryRecord{
+		page:  "git-push",
+		count: 2,
+	}
+
+	if (*history)[0] != rec1 {
+		t.Errorf("Expected first record to be %+v", rec1)
+	}
+
+	rec2 := HistoryRecord{
+		page:  "git-fetch",
+		count: 1,
+	}
+
+	if (*history)[1] != rec2 {
+		t.Errorf("Expected second record to be %+v", rec2)
+	}
+
+	rec3 := HistoryRecord{
+		page:  "git-pull",
+		count: 4,
+	}
+
+	if (*history)[2] != rec3 {
+		t.Errorf("Expected third record to be %+v", rec3)
+	}
+
 }

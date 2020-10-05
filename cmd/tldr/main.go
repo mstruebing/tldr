@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"math"
 	"math/rand"
 	"os"
 	"runtime"
@@ -22,6 +23,7 @@ const (
 	updateUsage   = "update local database"
 	versionUsage  = "print version and exit"
 	randomUsage   = "prints a random page"
+	historyUsage  = "show the latest search history"
 )
 
 const (
@@ -106,6 +108,11 @@ func printPage(page string) {
 	if err != nil {
 		log.Fatalf("ERROR: writing markdown: %s", err)
 	}
+
+	err2 := repository.RecordHistory(page)
+	if err2 != nil {
+		log.Fatalf("ERROR: saving history: %s", err2)
+	}
 }
 
 func printPageForPlatform(page string, platform string) {
@@ -156,6 +163,29 @@ func updatePages() {
 	}
 }
 
+func printHistory() {
+	repository, err := cache.NewRepository(remoteURL, ttl)
+	if err != nil {
+		log.Fatalf("ERROR: creating cache repository: %s", err)
+	}
+
+	history, err := repository.LoadHistory()
+	if err != nil {
+		log.Fatalf("ERROR: error loading history: %s", err)
+	}
+
+	hisLen := len(*history)
+	if hisLen == 0 {
+		fmt.Println("No history is available yet")
+	} else { //default print last 10.
+		size := int(math.Min(10, float64(hisLen)))
+		for i := 1; i <= size; i++ {
+			record := (*history)[hisLen-i]
+			fmt.Printf("%s\n", record)
+		}
+	}
+}
+
 func main() {
 	version := flag.Bool("version", false, versionUsage)
 	flag.BoolVar(version, "v", false, versionUsage)
@@ -176,6 +206,9 @@ func main() {
 	random := flag.Bool("random", false, randomUsage)
 	flag.BoolVar(random, "r", false, randomUsage)
 
+	history := flag.Bool("history", false, historyUsage)
+	flag.BoolVar(history, "t", false, historyUsage)
+
 	flag.Parse()
 
 	if *version {
@@ -191,6 +224,8 @@ func main() {
 		printPageForPlatform(page, *platform)
 	} else if *random {
 		printRandomPage()
+	} else if *history {
+		printHistory()
 	} else {
 		page := flag.Arg(0)
 		printPage(page)
