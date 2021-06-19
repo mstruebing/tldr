@@ -1,9 +1,11 @@
 package tldr
 
 import (
-	"github.com/mstruebing/tldr/cache"
 	"testing"
 	"time"
+
+	"github.com/mstruebing/tldr/cache"
+	"github.com/stretchr/testify/require"
 )
 
 const (
@@ -11,31 +13,8 @@ const (
 	ttl       = time.Hour * 24 * 7
 )
 
-func testSliceEqual(a, b []string) bool {
-
-	if a == nil && b == nil {
-		return true
-	}
-
-	if a == nil || b == nil {
-		return false
-	}
-
-	if len(a) != len(b) {
-		return false
-	}
-
-	for i := range a {
-		if a[i] != b[i] {
-			return false
-		}
-	}
-
-	return true
-}
-
 func TestCurrentPlattform(t *testing.T) {
-	var currentPlattform string = CurrentPlatform("linux")
+	currentPlattform := CurrentPlatform("linux")
 
 	if currentPlattform != "linux" {
 		t.Error("Expected linux, got ", currentPlattform)
@@ -78,16 +57,34 @@ func TestCurrentPlattform(t *testing.T) {
 }
 
 func TestAvailablePlatforms(t *testing.T) {
-	var availablePlatforms []string
-	repository, _ := cache.NewRepository(remoteURL, ttl)
-
-	availablePlatforms, _ = AvailablePlatforms(repository, "linux")
-	if !testSliceEqual([]string{"common", "linux", "osx", "sunos", "windows"}, availablePlatforms) {
-		t.Error("Expected to get all available platforms, got ", availablePlatforms)
+	tests := []struct {
+		name    string
+		current string
+		want    []string
+		wantErr bool
+	}{
+		{
+			name:    "linux",
+			current: "linux",
+			want:    []string{"android", "common", "linux", "osx", "sunos", "windows"},
+		},
+		{
+			name:    "stuff",
+			current: "stuff",
+			want:    []string{"android", "common", "linux", "osx", "sunos", "windows", "stuff"},
+		},
 	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 
-	availablePlatforms, _ = AvailablePlatforms(repository, "stuff")
-	if !testSliceEqual([]string{"common", "linux", "osx", "sunos", "windows", "stuff"}, availablePlatforms) {
-		t.Error("Expected to get all available platforms including 'stuff', got ", availablePlatforms)
+			repository, err := cache.NewRepository(remoteURL, ttl)
+			require.NoError(t, err, "NewRepository() error %v", err)
+
+			got, err := AvailablePlatforms(repository, tt.current)
+			require.NoError(t, err, "AvailablePlatforms() error %v", err)
+			require.ElementsMatch(t, tt.want, got, "expected available platforms %s, got %s", tt.want, got)
+		})
 	}
 }
