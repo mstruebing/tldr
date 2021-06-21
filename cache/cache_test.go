@@ -5,16 +5,9 @@ import (
 	"strings"
 	"testing"
 	"time"
-)
 
-func contains(arr []string, str string) bool {
-	for _, a := range arr {
-		if a == str {
-			return true
-		}
-	}
-	return false
-}
+	"github.com/stretchr/testify/require"
+)
 
 func TestCacheDir(t *testing.T) {
 	cacheDirectory, err := cacheDir()
@@ -58,35 +51,23 @@ func TestNewRepository(t *testing.T) {
 	}
 }
 
-func TestPlattforms(t *testing.T) {
+func TestPlatforms(t *testing.T) {
 	remote := "https://tldr.sh/assets/tldr.zip"
 	ttl := time.Hour * 24 * 7
-	r, _ := NewRepository(remote, ttl)
+	r, err := NewRepository(remote, ttl)
+	require.NoError(t, err, "NewRepository() error %v", err)
 
-	platforms, _ := r.AvailablePlatforms()
-	if len(platforms) != 5 {
-		t.Error("Expected 5 Platforms, got", len(platforms))
-	}
+	platforms, err := r.AvailablePlatforms()
+	require.NoError(t, err, "AvailablePlatforms() error %v", err)
 
-	if !contains(platforms, "linux") {
-		t.Error("Expected linux in platforms, got", platforms)
-	}
+	require.Len(t, platforms, 6, "expected 5 platforms, got", len(platforms))
 
-	if !contains(platforms, "common") {
-		t.Error("Expected common in platforms, got", platforms)
-	}
-
-	if !contains(platforms, "osx") {
-		t.Error("Expected osx in platforms, got", platforms)
-	}
-
-	if !contains(platforms, "sunos") {
-		t.Error("Expected sunos in platforms, got", platforms)
-	}
-
-	if !contains(platforms, "windows") {
-		t.Error("Expected windows in platforms, got", platforms)
-	}
+	require.Contains(t, platforms, "android", "expected android in platforms, got", platforms)
+	require.Contains(t, platforms, "linux", "expected linux in platforms, got", platforms)
+	require.Contains(t, platforms, "common", "expected common in platforms, got", platforms)
+	require.Contains(t, platforms, "osx", "expected osx in platforms, got", platforms)
+	require.Contains(t, platforms, "sunos", "expected sunos in platforms, got", platforms)
+	require.Contains(t, platforms, "windows", "expected windows in platforms, got", platforms)
 }
 
 func TestReload(t *testing.T) {

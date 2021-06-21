@@ -16,6 +16,10 @@
 
 ### Misc
 
+## [1.3.1] - 2021-06-21
+
+-   Add support for `Android` pages. [#53](https://github.com/mstruebing/tldr/pull/58) ([@conves](https://github.com/conves))
+
 ## [1.3.0] - 2020-10-05
 
 -   Add `history` function for the past page view. [#53](https://github.com/mstruebing/tldr/pull/53) ([@wudong](https://github.com/wudong))
