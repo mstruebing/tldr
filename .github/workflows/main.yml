@@ -10,6 +10,7 @@ env:
   GO111MODULE: on
 
 jobs:
+  build:
     name: Build and test
     runs-on: ubuntu-latest
 
