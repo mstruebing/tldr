@@ -87,13 +87,13 @@ func TestMarkdown(t *testing.T) {
 	ttl := time.Hour * 24 * 7
 	r, _ := NewRepository(remote, ttl)
 
-	_, err := r.Markdown("linux", "hostname")
+	_, err := r.Markdown("linux", "cat")
 
 	if err != nil {
 		t.Error("Expected to successfully pull a page from the cache")
 	}
 
-	_, err = r.Markdown("linux", "hostnamee")
+	_, err = r.Markdown("linux", "catt")
 
 	if err == nil {
 		t.Error("Expected to return an error for non existing pages")

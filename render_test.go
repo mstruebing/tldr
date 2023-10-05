@@ -1,6 +1,7 @@
 package tldr
 
 import (
+	"fmt"
 	"os"
 	"testing"
 
@@ -9,7 +10,8 @@ import (
 
 func TestRender(t *testing.T) {
 	r, _ := cache.NewRepository(remoteURL, ttl)
-	markdown, _ := r.Markdown("linux", "hostname")
+	markdown, _ := r.Markdown("linux", "cat")
+	fmt.Println("markdown:", markdown)
 
 	render, err := Render(markdown)
 
@@ -24,7 +26,7 @@ func TestRender(t *testing.T) {
 
 func TestWrite(t *testing.T) {
 	r, _ := cache.NewRepository(remoteURL, ttl)
-	markdown, _ := r.Markdown("linux", "hostname")
+	markdown, _ := r.Markdown("linux", "cat")
 
 	err := Write(markdown, os.Stdout)
 
